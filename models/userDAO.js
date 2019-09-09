@@ -11,7 +11,6 @@ var userDAO = {
             // })
         },
         getUserById: function(userId, callback) {
-
             // DAO('select * from stu where stuNo = ?', [userId], function(err, results) {
             //     console.log(results)
             //     if (err) {
@@ -27,14 +26,25 @@ var userDAO = {
         upload: function(user, callback) {
 
         },
+        // 登录
+        getUserByTel:function(telephone,callback){
+            DAO('select * from base_info where telephone = ?',[telephone],function(err,results){
+                if(err){
+                    callback(err,null)
+                }else{
+                    callback(null,results)
+                }
+            })
+        },
+        // 注册
         register: function(user, callback) {
-            //     DAO('insert into users(userTel,userPwd) values(?,?)', [user.userTel, user.userPwd], function(err, results) {
-            //         if (err) {
-            //             callback(err, null)
-            //         } else {
-            //             callback(null, results)
-            //         }
-            //     })
-            // }
+            DAO('insert into base_info(telephone,password) values(?,?)',[user.telephone,user.password],function(err,results){
+                if(err){
+                    callback(err,null)
+                }else{
+                    callback(null,results)
+                }
+            })
         }
-        module.exports = userDAO
+    }
+    module.exports = userDAO
