@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var passport = require('passport')
-var userController = require('../controllers/searchController')
+var userController = require('../controllers/searchControllers')
 
 // 普通用户
 router.get('/commUser', passport.authenticate('jwt', { session: false }), function(req, res, next) {
