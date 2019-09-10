@@ -5,13 +5,13 @@ var bcrypt = require('bcrypt')
 var jwt = require('jsonwebtoken')
 var userController = {
     getAllUsers: function (req, res) {
-        // userDAO.getAllUsers(function(err, results) {
-        //     if (err) {
-        //         res.json({ code: 500, msg: '用户信息查询失败！' })
-        //     } else {
-        //         res.json({ code: 200, data: results, msg: '用户查询成功！' })
-        //     }
-        // })
+        userDAO.getAllUsers(function(err, results) {
+            if (err) {
+                res.json({ code: 500, msg: '用户信息查询失败！' })
+            } else {
+                res.json({ code: 200, data: results, msg: '用户查询成功！' })
+            }
+        })
     },
     getUserById: function (req, res, userId) {
         // var userId = req.params.uId

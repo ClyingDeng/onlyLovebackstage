@@ -9,6 +9,13 @@ var userDAO = {
             //     callback(null, results)
             // }
             // })
+            DAO('select * from stuinfos',null,function(err,results){
+                if(err){
+                    callback(err,null)
+                }else{
+                    callback(null,results)
+                }
+            })
         },
         getUserById: function(userId, callback) {
             // DAO('select * from stu where stuNo = ?', [userId], function(err, results) {
