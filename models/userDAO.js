@@ -45,6 +45,88 @@ var userDAO = {
                     callback(null,results)
                 }
             })
+        },
+        identification: function(user, callback) {
+            DAO('',[],function(err,results){
+                if(err){
+                    callback(err,null)
+                }else{
+                    callback(null,results)
+                }
+            })
+        },
+        updateHeadPic: function(user, callback) {
+            DAO('',[],function(err,results){
+                if(err){
+                    callback(err,null)
+                }else{
+                    callback(null,results)
+                }
+            })
+        },
+        updatePassword: function(user, callback) {
+            DAO('',[],function(err,results){
+                if(err){
+                    callback(err,null)
+                }else{
+                    callback(null,results)
+                }
+            })
+        },
+        forgetPassword: function(user, callback) {
+            DAO('',[],function(err,results){
+                if(err){
+                    callback(err,null)
+                }else{
+                    callback(null,results)
+                }
+            })
+        },
+        Vcode: function(user, callback) {
+            DAO('',[],function(err,results){
+                if(err){
+                    callback(err,null)
+                }else{
+                    callback(null,results)
+                }
+            })
+        },
+        updateInfo: function(user, callback) {
+            DAO('',[],function(err,results){
+                if(err){
+                    callback(err,null)
+                }else{
+                    callback(null,results)
+                }
+            })
+        },
+        from_Presents: function(user, callback) {
+            DAO('',[],function(err,results){
+                if(err){
+                    callback(err,null)
+                }else{
+                    callback(null,results)
+                }
+            })
+        },
+        to_Presents: function(user, callback) {
+            DAO('',[],function(err,results){
+                if(err){
+                    callback(err,null)
+                }else{
+                    callback(null,results)
+                }
+            })
+        },
+        userInfo: function(user, callback) {
+            DAO('',[],function(err,results){
+                if(err){
+                    callback(err,null)
+                }else{
+                    callback(null,results)
+                }
+            })
         }
+
     }
     module.exports = userDAO

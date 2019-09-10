@@ -73,6 +73,37 @@ var userController = {
                 })
             });
         });
+    },
+
+    identification: function(req,res){
+
+    },
+    updateHeadPic:function(req,res){
+
+    },
+    updatePassword:function(req,res){
+
+    },
+    forgetPassword:function(req,res){
+
+    },
+    Vcode:function(req,res){
+
+    },
+    updateInfo:function(req,res){
+
+    },
+    from_Presents:function(req,res){
+
+    },
+    to_Presents:function(req,res){
+
+    },
+    userInfo:function(req,res){
+
     }
+    
+
+
 }
 module.exports = userController
