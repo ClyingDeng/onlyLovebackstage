@@ -4,15 +4,15 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var session = require('express-session');
-
+var passport = require('passport')
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var mypassport = require('./config/passport')
 
 var app = express();
 
 //设置跨域请求的允许操作
 app.all('*', function(req, res, next) {
-
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Headers', 'Content-Type');
     res.header('Access-Control-Allow-Methods', '*');
@@ -28,9 +28,11 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-
-
 app.use(express.static(path.join(__dirname, 'public')));
+//使用passport中间件，并初始化
+app.use(passport.initialize());
+//使用passport的验证方法
+mypassport(passport)
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);

@@ -2,6 +2,7 @@ var userDAO = require('../models/userDAO')
 var formidable = require('formidable')
 var path = require('path')
 var bcrypt = require('bcrypt')
+var jwt = require('jsonwebtoken')
 var userController = {
     getAllUsers: function (req, res) {
         // userDAO.getAllUsers(function(err, results) {

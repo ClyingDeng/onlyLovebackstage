@@ -1,8 +1,10 @@
 var express = require('express');
 var router = express.Router();
+var passport = require('passport')
+var userController = require('../controllers/userController')
 
 /* GET users listing. */
-router.get('/', function (req, res, next) {
+router.get('/',passport.authenticate('jwt',{session:false}) , function (req, res, next) {
     res.send('respond with a resource');
 });
 /*登录*/
