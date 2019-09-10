@@ -1,7 +1,7 @@
 var dbconfig = {
     host: 'localhost',
     port: 3306,
-    database: 'onlylove',
+    database: 'only love',
     user: 'root',
     password: 'password'
 }
