@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var passport = require('passport')
-var userController = require('../controllers/userController')
+var userController = require('../controllers/userControllers')
 
 // 部分信息
 router.get('/manyInfo',passport.authenticate('jwt',{session:false}) , function (req, res, next) {

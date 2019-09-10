@@ -1,7 +1,11 @@
 var express = require('express');
 var router = express.Router();
 var passport = require('passport')
+// <<<<<<< branch03
+// var userController = require('../controllers/userControllers')
+// =======
 var userController = require('../controllers/shopControllers')
+// >>>>>>> master
 
 
 // 商品

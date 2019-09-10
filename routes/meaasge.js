@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var passport = require('passport')
-var userController = require('../controllers/userController')
+var userController = require('../controllers/userControllers')
 
 // 好友列表
 router.post('/friendList',passport.authenticate('jwt',{session:false}) , function (req, res, next) {
