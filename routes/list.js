@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var passport = require('passport')
-var userController = require('../controllers/userController')
+var userController = require('../controllers/userControllers')
 
 // 狂热榜
 router.get('/crazy', function (req, res, next) {

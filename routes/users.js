@@ -2,6 +2,16 @@ var express = require('express');
 var router = express.Router();
 var passport = require('passport')
 var userController = require('../controllers/userControllers')
+<<<<<<< HEAD
+=======
+
+/* 获取所有用户信息. */
+router.get('/',passport.authenticate('jwt',{session:false}) ,function(req, res, next) {
+    userController.getAllUsers(req,res)
+    // res.send('respond with a resource');
+  });
+
+>>>>>>> branch02
 
 /* GET users listing. */
 router.get('/',passport.authenticate('jwt',{session:false}) , function (req, res, next) {

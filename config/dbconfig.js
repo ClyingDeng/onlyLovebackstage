@@ -1,8 +1,8 @@
 var dbconfig = {
     host: 'localhost',
     port: 3306,
-    database: 'only love',
+    database: 'mydb',
     user: 'root',
-    password: 'password'
+    password: '121506'
 }
 module.exports = dbconfig
