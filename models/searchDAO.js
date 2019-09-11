@@ -1,7 +1,7 @@
 var DAO = require('./DAO')
-var search = {
+var searchDAO = {
     getSearchComm: function(callback) {
-        DAO('', [userId], function(err, results) {
+        DAO('select * from commUser', function(err, results) {
             console.log(results)
             if (err) {
                 callback(err, null)
@@ -17,3 +17,4 @@ var search = {
 
     }
 }
+module.exports = searchDAO

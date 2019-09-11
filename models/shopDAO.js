@@ -41,3 +41,4 @@ var shopDAO = {
         })
     }
 }
+module.exports = shopDAO

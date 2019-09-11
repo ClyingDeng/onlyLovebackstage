@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var passport = require('passport')
-var userController = require('../controllers/searchControllers')
+var searchController = require('../controllers/searchControllers')
 
 // 普通用户
 router.get('/commUser', passport.authenticate('jwt', { session: false }), function(req, res, next) {
@@ -15,3 +15,4 @@ router.get('/seniorUser', passport.authenticate('jwt', { session: false }), func
 router.get('/masterUser', passport.authenticate('jwt', { session: false }), function(req, res, next) {
     searchController.masterUser(req, res)
 });
+module.exports = router;

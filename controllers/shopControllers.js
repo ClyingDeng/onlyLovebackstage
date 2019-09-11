@@ -61,3 +61,4 @@ var shopController = {
         })
     }
 }
+module.exports = shopController;

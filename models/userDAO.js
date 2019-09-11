@@ -27,8 +27,9 @@ var userDAO = {
 
     },
     // 登录
-    getUserByTel: function(telephone, callback) {
-        DAO('select * from base_info where telephone = ?', [telephone], function(err, results) {
+    login: function(user, callback) {
+        console.log(user)
+        DAO('select * from base_info where telephone = ? ', [user.telephone], function(err, results) {
             if (err) {
                 callback(err, null)
             } else {
@@ -38,7 +39,7 @@ var userDAO = {
     },
     // 注册
     register: function(user, callback) {
-        DAO('insert into base_info(telephone,password) values(?,?)', [user.telephone, user.password], function(err, results) {
+        DAO('insert into base_info(telephone,pwd) values (?,?)', [user.telephone, user.password], function(err, results) {
             if (err) {
                 callback(err, null)
             } else {
