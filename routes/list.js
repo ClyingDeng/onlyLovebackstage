@@ -4,14 +4,15 @@ var passport = require('passport')
 var listController = require('../controllers/listControllers')
 
 // 狂热榜
-router.get('/crazy', function (req, res, next) {
-    listController.crazy(req, res)
-})
-// 魅力榜
-router.get('/charm', function (req, res, next) {
-    listController.charm(req, res)
-})
-// 比翼榜
-router.get('/sweetChart', function (req, res, next) {
+router.get('/crazy', function(req, res, next) {
+        listController.crazy(req, res)
+    })
+    // 魅力榜
+router.get('/charm', function(req, res, next) {
+        listController.charm(req, res)
+    })
+    // 比翼榜
+router.get('/sweetChart', function(req, res, next) {
     listController.sweetChart(req, res)
 })
+module.exports = router;

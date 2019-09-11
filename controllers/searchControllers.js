@@ -1,11 +1,11 @@
-var userDAO = require('../models/searchDAO')
+var searchDAO = require('../models/searchDAO')
 var formidable = require('formidable')
 var path = require('path')
 var bcrypt = require('bcrypt')
 var jwt = require('jsonwebtoken')
 var searchController = {
     commUser: function(req, res) {
-        searchDAO.getSearchComm(userId, function(err, results) {
+        searchDAO.getSearchComm(function(err, results) {
             if (err) {
                 res.json({ code: 500, msg: '搜索查询失败！' })
             } else {

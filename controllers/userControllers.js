@@ -36,63 +36,48 @@ var userController = {
 
     },
     login: function(req, res) {
-        //接收用户请求传入的参数，并创建用户对象
-// <<<<<<< branch03
-//         var user = {telephone:req.body.telephone,password:req.body.password}
-//         userDAO.getUserByTel(user.telephone,function(err,results){
-//            if(err){
-//                res.status(500).json({msg:'数据库错误，登录失败！'})
-//            }else{
-//                if(results == null ||results.length != 1){
-//                    res.status(200).json({msg:'手机号不存在，登录失败！'})
-//                }else{
-//                    bcrypt.compare(user.password, results[0].password, function(err, resPwd) {
-//                        // res == true
-//                        if(resPwd){
-//                            //记录登录成功后的token
-//                            jwt.sign({ telephone: user.telephone }, 'privateKey', { expiresIn: 60*60 }, function(err, token) {
-//                                console.log(token);
-//                                //注意token的固定格式“Bearer ”前缀
-//                                res.status(200).json({msg:'登录成功！！',token:'Bearer ' + token})
-//                              });
-//                        }else{
-//                            res.status(200).json({msg:'密码错误，登录失败！！'})
-//                        }
-//                    });
-//                }
-//            }
-// =======
         var user = { telephone: req.body.telephone, password: req.body.password }
-        userDAO.getUserByTel(user.telephone, function(err, results) {
+        userDAO.login(user, function(err, results) {
             if (err) {
                 res.status(500).json({ msg: '数据库错误，登录失败！' })
             } else {
                 if (results == null || results.length != 1) {
+                    // console.log(results)
+                    // console.log(user.password)
                     res.status(200).json({ msg: '手机号不存在，登录失败！' })
                 } else {
-                    bcrypt.compare(user.password, results[0].password, function(err, resPwd) {
+                    bcrypt.compare(user.password, results[0].pwd, function(err, resPwd) {
                         // res == true
+                        // console.log(user.password)
                         if (resPwd) {
-                            res.status(200).json({ msg: '登录成功！！' })
+                            //记录登录成功后的token
+                            jwt.sign({ telephone: user.telephone }, 'privateKey', { expiresIn: 60 * 60 }, function(err, token) {
+                                console.log(token);
+                                //注意token的固定格式“Bearer ”前缀
+                                res.status(200).json({ msg: '登录成功！！', token: 'Bearer ' + token })
+                            });
                         } else {
+                            console.log(user.password)
+                            console.log(results[0])
                             res.status(200).json({ msg: '密码错误，登录失败！！' })
                         }
                     });
                 }
             }
-// >>>>>>> master
         })
     },
     register: function(req, res) {
         //接收用户请求传入的参数，并创建用户对象
         var user = { telephone: req.body.telephone, password: req.body.password }
+            // console.log(user)
         bcrypt.genSalt(10, function(err, salt) {
             bcrypt.hash(user.password, salt, function(err, hash) {
                 //hash是加密后的字符
                 user.password = hash
                 userDAO.register(user, function(err, results) {
                     if (err) {
-                        res.status(500).json({ msg: '数据库错误，注册失败！' })
+                        console.log(err)
+                        res.status(500).json({ msg: '数据库错误，注册失败！' + err })
                     } else {
                         res.status(200).json({ msg: '注册成功！' })
                     }
