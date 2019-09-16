@@ -99,7 +99,7 @@ var personalController = {
                     console.log(results[0].sweet_score)
                     var sweet = results[0].sweet_score
                 }
-                if (sweet == 0) {
+                if (sweet < 10) {
                     //亲密度为0
                     personalDAO.getPersonalManyInfo(oId, function(err, results1) {
                         if (err) {
@@ -115,7 +115,7 @@ var personalController = {
                             }
                         }
                     })
-                } else if (sweet <= 10) {
+                } else if (sweet < 20) {
                     personalDAO.getFirstSweet(oId, function(err, results1) {
                         if (err) {
                             res.json({ code: 500, msg: '搜索查询失败！' })
@@ -130,7 +130,7 @@ var personalController = {
                             }
                         }
                     })
-                } else {
+                } else if(sweet < 50) {
                     personalDAO.getSecondSweet(oId, function(err, results1) {
                         if (err) {
                             res.json({ code: 500, msg: '搜索查询失败！' })
@@ -145,13 +145,79 @@ var personalController = {
                             }
                         }
                     })
+                }else if(sweet < 99){
+                    personalDAO.getThirdSweet(oId, function(err, results1) {
+                        if (err) {
+                            res.json({ code: 500, msg: '搜索查询失败！' })
+                        } else {
+                            if (results1.length > 0) {
+
+                                res.json({ code: 200, data: results1, msg: '他人主页查询成功！' })
+
+                            } else {
+                                res.json({ code: 200, data: results, msg: '查无此人！' })
+
+                            }
+                        }
+                    })
+                }else if(sweet < 199){
+                    personalDAO.getFourthSweet(oId, function(err, results1) {
+                        if (err) {
+                            res.json({ code: 500, msg: '搜索查询失败！' })
+                        } else {
+                            if (results1.length > 0) {
+
+                                res.json({ code: 200, data: results1, msg: '他人主页查询成功！' })
+
+                            } else {
+                                res.json({ code: 200, data: results, msg: '查无此人！' })
+
+                            }
+                        }
+                    })
+                }else if(sweet <= 299){
+                    personalDAO.getFifthSweet(oId, function(err, results1) {
+                        if (err) {
+                            res.json({ code: 500, msg: '搜索查询失败！' })
+                        } else {
+                            if (results1.length > 0) {
+
+                                res.json({ code: 200, data: results1, msg: '他人主页查询成功！' })
+
+                            } else {
+                                res.json({ code: 200, data: results, msg: '查无此人！' })
+
+                            }
+                        }
+                    })
+                }else{
+                    personalDAO.getSixthSweet(oId, function(err, results1) {
+                        if (err) {
+                            res.json({ code: 500, msg: '搜索查询失败！' })
+                        } else {
+                            if (results1.length > 0) {
+
+                                res.json({ code: 200, data: results1, msg: '他人主页查询成功！' })
+
+                            } else {
+                                res.json({ code: 200, data: results, msg: '查无此人！' })
+
+                            }
+                        }
+                    })
                 }
+
+
+
+
             }
         })
 
 
     },
     addFriend: function(req, res) {
+        var oId = req.params.uId
+        console.log('对方账号：' + oId)
         personalDAO.postPersonaladdFriend(function(err, results) {
             if (err) {
                 res.json({ code: 500, msg: '搜索查询失败！' })
