@@ -19,16 +19,12 @@ var shopController = {
         })
     },
     member: function(req, res) {
-        shopDAO.getShopMember(userId, function(err, results) {
+        // var userId = req.body.userId
+        shopDAO.getShopMember(function(err, results) {
             if (err) {
-                res.json({ code: 500, msg: '搜索查询失败！' })
+                res.json({ code: 500, msg: '查询失败！' })
             } else {
-                if (results.length > 0) {
-                    res.json({ code: 200, data: results, msg: '搜索查询成功！' })
-                } else {
-                    res.json({ code: 200, data: results, msg: '查无此人！' })
-
-                }
+                res.json({ code: 200, data: results, msg: '查询成功！' })
             }
         })
     },

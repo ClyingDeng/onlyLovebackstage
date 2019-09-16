@@ -55,6 +55,7 @@ var personalController = {
                                                 //有动态显示动态
                                             personalDAO.getCondition(userId, function(err, results4) {
                                                 if (err) {
+                                                    console.log(err)
                                                     res.json({ code: 500, msg: '显示动态失败！' })
                                                 } else {
                                                     console.log('动态：')
