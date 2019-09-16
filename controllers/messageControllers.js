@@ -4,9 +4,9 @@ var path = require('path')
 var bcrypt = require('bcrypt')
 var jwt = require('jsonwebtoken')
 var messageController = {
-    friendList: function (req, res) {
+    friendList: function(req, res) {
         var userId = req.params.uId
-        messageDAO.friendList(function (err, results) {
+        messageDAO.friendList(function(err, results) {
             if (err) {
                 res.json({ code: 500, msg: '好友列表查询失败！' })
             } else {
@@ -14,9 +14,11 @@ var messageController = {
             }
         })
     },
-    attention: function (req, res) {
-        var userId = req.params.uId
-        messageDAO.attention(function (err, results) {
+    attention: function(req, res) {
+        var telephone = req.user.telephone
+            // var telephone = 15238552239
+        console.log(req.user)
+        messageDAO.attention(telephone, function(err, results) {
             if (err) {
                 res.json({ code: 500, msg: '关注查询失败！' })
             } else {
@@ -24,9 +26,9 @@ var messageController = {
             }
         })
     },
-    messageList: function (req, res) {
+    messageList: function(req, res) {
         var userId = req.params.uId
-        messageDAO.messageList(function (err, results) {
+        messageDAO.messageList(function(err, results) {
             if (err) {
                 res.json({ code: 500, msg: '消息查询失败！' })
             } else {
@@ -34,9 +36,9 @@ var messageController = {
             }
         })
     },
-    systemMessage: function (req, res) {
+    systemMessage: function(req, res) {
         var userId = req.params.uId
-        messageDAO.systemMessage(function (err, results) {
+        messageDAO.systemMessage(function(err, results) {
             if (err) {
                 res.json({ code: 500, msg: '系统消息插入失败！' })
             } else {
