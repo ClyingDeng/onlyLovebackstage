@@ -3,6 +3,6 @@ var dbconfig = {
     port: 3306,
     database: 'onlylove',
     user: 'root',
-    password: 'password'
+    password: '121506'
 }
 module.exports = dbconfig

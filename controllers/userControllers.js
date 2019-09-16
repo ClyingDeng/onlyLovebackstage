@@ -32,9 +32,35 @@ var userController = {
 
     },
     //上传头像
-    uploadPic: function(req, res) {
-
+    updateHeadPic: function(req, res) {
+        var form = new formidable.IncomingForm()    //创建上传表单对象
+        form.uploadDir = path.join(__dirname, '..', '/public/upload')         //设置上传文件的路径
+        form.keepExtensions = true                  //设置保留上传文件的扩展名
+        form.parse(req, function (err, fields, files) {
+            if (err) {
+                res.send('文件上传错误！')
+            }
+            console.log('...................')
+            //fields是上传的表单字段数组，files是上传的文件列表
+            console.log(files)
+            //保存图片路径到数据库
+            //1.获取当前用户编号
+            var userId = fields.userId
+            //2.获取当前用户的图片名称
+            var headPic = path.parse(files.file.path).base
+            console.log(headPic)
+            userDAO.upload({ file: headPic,userId: userId}, function (err, results) {
+            //    console.log(user.headPic)
+                if (err) {
+                    res.json({ code: 500, msg: '上传文件失败！' })
+                } else {
+                    res.json({ code: 200, data: results, msg: '上传文件成功！' })
+                }
+            })
+        })
+              
     },
+    // 登录
     login: function(req, res) {
         var user = { telephone: req.body.telephone, password: req.body.password }
         userDAO.login(user, function(err, results) {
@@ -66,6 +92,7 @@ var userController = {
             }
         })
     },
+    // 注册
     register: function(req, res) {
         //接收用户请求传入的参数，并创建用户对象
         var user = { telephone: req.body.telephone, password: req.body.password }
@@ -84,6 +111,60 @@ var userController = {
                 })
             });
         });
+    },
+
+    // 修改密码
+    updatePassword:function(req,res){
+        var userId = req.body.base_info_Id
+        var userpwd = req.body.userpwd
+        userDAO.updatePassword({ userId: userId, pwd: userpwd }, function (err, results) {
+            if (err) {
+                res.json({ code: 500, msg: '用户修改密码失败！' })
+            } else {
+                //检查该操作对数据表是否造成影响
+                if (results.affectedRows == 0) {
+                    res.json({ code: 500, msg: '用户修改密码失败！' })
+                } else {
+                    res.json({ code: 200, data: results, msg: '用户修改密码成功！' })
+                }
+            }
+        });
+      
+            
+        },
+    //认证
+    identification:function(req,res){
+        var userId = req.body.base_info_Id
+        console.log('注释：' + userId)
+        // var use_status = req.body.use_status
+        userDAO.identification({ userId: userId }, function (err, results) {
+            if (err) {
+                res.json({ code: 500, msg: '用户认证失败' })
+            } else {
+                //检查该操作对数据表是否造成影响
+                if (results.affectedRows == 0) {
+                    res.json({ code: 500, msg: '用户还未认证,去认证！' })
+                //     // if (results.length > 0) {
+                //        userDAO.identifications({userId:userId},function(err,results2){
+                //            if(err){
+                // res.json({ code: 500, msg: '用户认证失败' })
+
+                //            }else{
+                //             res.json({ code: 200, data: results, msg: '查无此人！' })
+                //            }
+                //           console.log(results2)
+                //        })
+
+                //     }
+                } else {
+                    res.json({ code: 200, data: results, msg: '用户认证成功！' })
+                }
+            }
+        });
+      
+            
+        },
+
     }
-}
+
 module.exports = userController
