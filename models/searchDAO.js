@@ -11,10 +11,24 @@ var searchDAO = {
         })
     },
     getSearchSenior: function(callback) {
-
+        DAO('select * from seniorUser', function(err, results) {
+            console.log(results)
+            if (err) {
+                callback(err, null)
+            } else {
+                callback(null, results)
+            }
+        })
     },
     getSearchMaster: function(callback) {
-
+        DAO('select * from masterUser', function(err, results) {
+            console.log(results)
+            if (err) {
+                callback(err, null)
+            } else {
+                callback(null, results)
+            }
+        })
     }
 }
 module.exports = searchDAO
