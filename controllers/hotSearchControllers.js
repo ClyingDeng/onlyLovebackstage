@@ -22,7 +22,7 @@ var hotSearchController = {
             if (err) {
                 res.status(500).json({ msg: '发布动态失败！' })
             } else {
-                res.status(200).json({ msg: '发布动态成功！' })
+                res.json({ code: 200, data: results, msg: '动态发布成功！' })
             }
         })
 

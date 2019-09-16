@@ -1,7 +1,7 @@
 var DAO = require('./DAO')
 var listDAO = {
     crazy: function(callback) {
-        DAO('select * from crazyrank', null, function(err, results) {
+        DAO('SELECT (@rowNO := @rowNo+1) AS rowno,a.* FROM (SELECT * FROM crazyRank) a,(SELECT @rowNO :=0) b ', null, function(err, results) {
         if (err) {
             callback(err, null)
         } else {
@@ -10,7 +10,7 @@ var listDAO = {
         })
     },
     charm: function(callback) {
-        DAO('select * from crazyrank', null, function(err, results) {
+        DAO('SELECT (@rowNO := @rowNo+1) AS rowno,a.* FROM (SELECT * FROM beautRank) a,(SELECT @rowNO :=0) b ', null, function(err, results) {
         if (err) {
             callback(err, null)
         } else {
@@ -19,7 +19,7 @@ var listDAO = {
         })
     },
     sweetChart: function(callback) {
-        DAO('select * from sweetRank', null, function(err, results) {
+        DAO('SELECT (@rowNO := @rowNo+1) AS rowno,a.* FROM (SELECT * FROM sweetRank) a,(SELECT @rowNO :=0) b ', null, function(err, results) {
         if (err) {
             callback(err, null)
         } else {
