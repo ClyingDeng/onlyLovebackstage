@@ -91,6 +91,50 @@ var personalDAO = {
             }
         })
     },
+    //三级
+    getThirdSweet: function(userId, callback) {
+        console.log(userId)
+        DAO('select base_info_Id,nickName,headPic,sex,love_description,blight,hobby,height,weight,occupation,birthday,choose_object,body_status from base_info where base_info_Id = ?', [userId], function(err, results) {
+            if (err) {
+                callback(err, null)
+            } else {
+                callback(null, results)
+            }
+        })
+    },
+    //四级
+    getFourthSweet: function(userId, callback) {
+        console.log(userId)
+        DAO('select base_info_Id,nickName,headPic,sex,love_description,blight,hobby,height,weight,occupation,birthday,choose_object,body_status,education,marriage,salary from base_info where base_info_Id = ?', [userId], function(err, results) {
+            if (err) {
+                callback(err, null)
+            } else {
+                callback(null, results)
+            }
+        })
+    },
+    //五级
+    getFifthSweet: function(userId, callback) {
+        console.log(userId)
+        DAO('select base_info_Id,nickName,headPic,sex,love_description,blight,hobby,height,weight,occupation,birthday,choose_object,body_status,education,marriage,salary,province,city,love_affair from base_info where base_info_Id = ?', [userId], function(err, results) {
+            if (err) {
+                callback(err, null)
+            } else {
+                callback(null, results)
+            }
+        })
+    },
+    //六级
+    getSixthSweet: function(userId, callback) {
+        console.log(userId)
+        DAO('select base_info_Id,nickName,headPic,sex,love_description,blight,hobby,height,weight,occupation,birthday,choose_object,body_status,education,marriage,salary,province,city,love_affair,car,house,telephone from base_info where base_info_Id = ?', [userId], function(err, results) {
+            if (err) {
+                callback(err, null)
+            } else {
+                callback(null, results)
+            }
+        })
+    },
 
     postPersonaladdFriend: function(callback) {
 
