@@ -13,18 +13,18 @@ var hotSearchController = {
             }
         })
     },
-    publish: function (userId,req, res) {
-        //需要用户id
-        // var userId = req.params.uId
-        //hash是加密后的字符
-        // user.password = hash
-        // hotSearchDAO.publish(user, function (err, results) {
-        //     if (err) {
-        //         res.status(500).json({ msg: '发布动态失败！' })
-        //     } else {
-        //         res.status(200).json({ msg: '发布动态成功！' })
-        //     }
-        // })
+    publish: function (req, res) {
+        // 需要用户id
+        var conuser = {conuserId: req.body.conuserId,conwords: req.body.conwords,conuserPic: req.body.conuserPic}
+        console.log(conuser)
+        // hash是加密后的字符
+        hotSearchDAO.publish(conuser, function (err, results) {
+            if (err) {
+                res.status(500).json({ msg: '发布动态失败！' })
+            } else {
+                res.status(200).json({ msg: '发布动态成功！' })
+            }
+        })
 
     }
 }
