@@ -12,15 +12,16 @@ router.get('/othersAttention/:uId', passport.authenticate('jwt', { session: fals
     personalController.otherPersonal(req, res)
 });
 // 加好友
-router.post('/addFriend', passport.authenticate('jwt', { session: false }), function(req, res, next) {
+router.post('/addFriend/:oId', passport.authenticate('jwt', { session: false }), function(req, res, next) {
     personalController.addFriend(req, res)
 });
+router.post('/agreeFriend/:oId', passport.authenticate('jwt', { session: false }), function(req, res, next) {
+    personalController.agreeFriend(req, res)
+});
+
+
 // 送她礼物
 router.post('/addGift', passport.authenticate('jwt', { session: false }), function(req, res, next) {
     personalController.addGift(req, res)
 });
-// // 亲密度
-// router.get('/sweet', passport.authenticate('jwt', { session: false }), function(req, res, next) {
-//     personalController.sweet(req, res)
-// });
 module.exports = router;

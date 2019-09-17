@@ -68,9 +68,9 @@ var userDAO = {
         })
     },
  //认证查询
-    identification: function(user, callback) {
-    console.log(user)
-    DAO('select use_status from base_info WHERE base_info_id = ?',[user.userId],function(err,results){
+ identification: function(userId, callback) {
+    console.log(userId)
+    DAO('select use_status from base_info WHERE base_info_id = ?',[userId],function(err,results){
         if(err){
             callback(err,null)
         }else{

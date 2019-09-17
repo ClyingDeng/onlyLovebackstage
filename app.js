@@ -36,6 +36,17 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+app.use(session({
+    secret: 'keyboard cat',
+    resave: true,
+    saveUninitialized: true,
+    cookie: { maxAge: 1000 * 60 * 10 } //通过cookie下的maxAg变量保存session时间
+    //从用户最后一次操作网页开始计时
+}))
+
+
+
 app.use(express.static(path.join(__dirname, 'public')));
 //使用passport中间件，并初始化
 app.use(passport.initialize());
