@@ -79,6 +79,7 @@ var userController = {
                             //记录登录成功后的token
                             jwt.sign({ telephone: user.telephone }, 'privateKey', { expiresIn: 60 * 60 }, function(err, token) {
                                 console.log(token);
+                                console.log(req.user)
                                 //注意token的固定格式“Bearer ”前缀
                                 res.status(200).json({ msg: '登录成功！！', token: 'Bearer ' + token })
                             });
@@ -92,10 +93,13 @@ var userController = {
             }
         })
     },
+    //
+
     // 注册
     register: function(req, res) {
+        
         //接收用户请求传入的参数，并创建用户对象
-        var user = { telephone: req.body.telephone, password: req.body.password }
+        var user = { telephone: req.body.telephone, password: req.body.password,vCode:req.body.code }
             // console.log(user)
         bcrypt.genSalt(10, function(err, salt) {
             bcrypt.hash(user.password, salt, function(err, hash) {
@@ -104,9 +108,24 @@ var userController = {
                 userDAO.register(user, function(err, results) {
                     if (err) {
                         console.log(err)
-                        res.status(500).json({ msg: '数据库错误，注册失败！' + err })
+                        res.status(500).json({ msg: '手机号已存在，注册失败！' + err })
                     } else {
-                        res.status(200).json({ msg: '注册成功！' })
+                        console.log(req.session.TelvCode)
+                        for(var i = 0; i < req.session.TelvCode.length; i++){
+                            if(req.session.TelvCode[i].telephone == user.telephone && req.session.TelvCode[i].vCode == user.vCode ){
+                                res.status(200).json({ msg: '验证码正确，注册成功！' })
+                                delete req.session.TelvCode[i];
+                                if(req.session.TelvCode[i] == " " || req.session.TelvCode[i] == null || typeof(req.session.TelvCode[i]) == "undefined")  
+                                {  
+                                    req.session.TelvCode.splice(i,1);  
+                                         i= i-1;  
+                                }
+                                console.log(req.session.TelvCode)
+                            }else{
+                                res.status(200).json({ msg: '验证码输入失败，注册失败！' })
+                            }
+
+                        }
                     }
                 })
             });
@@ -134,28 +153,26 @@ var userController = {
         },
     //认证
     identification:function(req,res){
-        var userId = req.body.base_info_Id
+        console.log(req.user)
+        var userId = req.user[0].base_info_Id
         console.log('注释：' + userId)
         // var use_status = req.body.use_status
-        userDAO.identification({ userId: userId }, function (err, results) {
+        userDAO.identification(userId, function (err, results) {
             if (err) {
                 res.json({ code: 500, msg: '用户认证失败' })
             } else {
                 //检查该操作对数据表是否造成影响
-                if (results.affectedRows == 0) {
-                    res.json({ code: 500, msg: '用户还未认证,去认证！' })
-                //     // if (results.length > 0) {
-                //        userDAO.identifications({userId:userId},function(err,results2){
-                //            if(err){
-                // res.json({ code: 500, msg: '用户认证失败' })
+                if (results.length > 0) {
+                    console.log(results[0].use_status)
+                    var status = results[0].use_status
+                    if(status == 0){
+                        //去认证，调用认证方法
+                        
 
-                //            }else{
-                //             res.json({ code: 200, data: results, msg: '查无此人！' })
-                //            }
-                //           console.log(results2)
-                //        })
-
-                //     }
+                        res.json({ code: 200, data: results, msg: '查无此人！' })
+                    }else{
+                        res.json({ code: 500,data: results, msg: '用户已认证！' })
+                    }
                 } else {
                     res.json({ code: 200, data: results, msg: '用户认证成功！' })
                 }
@@ -164,6 +181,7 @@ var userController = {
       
             
         },
+
 
     }
 

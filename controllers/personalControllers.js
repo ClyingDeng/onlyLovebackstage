@@ -216,48 +216,73 @@ var personalController = {
 
     },
     addFriend: function(req, res) {
-        var oId = req.params.uId
+        
+        var oId = req.params.oId
+        var userId = req.user[0].base_info_Id
         console.log('对方账号：' + oId)
-        personalDAO.postPersonaladdFriend(function(err, results) {
+        console.log('我自己的账号：' + userId)
+        personalDAO.postPersonaladdFriend(oId,userId,function(err, results) {
             if (err) {
                 res.json({ code: 500, msg: '搜索查询失败！' })
             } else {
-                if (results.length > 0) {
-                    res.json({ code: 200, data: results, msg: '搜索查询成功！' })
+                // console.log(results)
+                if (results.affectedRows > 0) {
+                    res.json({ code: 200, data: results, msg: '加好友请求发送成功！' })
                 } else {
-                    res.json({ code: 200, data: results, msg: '查无此人！' })
-
+                    res.json({ code: 200, data: results, msg: '加好友请求发送失败！' })
                 }
             }
         })
     },
-    addGift: function(req, res) {
-        personalDAO.postPersonalAddGift(function(err, results) {
+    agreeFriend:function(req,res){
+        var oId = req.params.oId
+        var userId = req.user[0].base_info_Id
+        console.log('对方账号：' + oId)
+        console.log('我自己的账号：' + userId)
+        //无好友请求
+        DAO('select fri_status from friends where user_Id = ? and fri_Id = ? ', [oId,userId], function(err, results) {
             if (err) {
                 res.json({ code: 500, msg: '搜索查询失败！' })
             } else {
-                if (results.length > 0) {
-                    res.json({ code: 200, data: results, msg: '搜索查询成功！' })
-                } else {
-                    res.json({ code: 200, data: results, msg: '查无此人！' })
-
+                // console.log(results)
+                if(results){
+                    if(results[0].fri_status == 0){
+                        //有好友请求
+                        personalDAO.agreeFriend(oId,userId,function(err, results1) {
+                            if (err) {
+                                res.json({ code: 500, msg: '搜索查询失败！' })
+                            } else {
+                                if (results1.affectedRows > 0) {
+                                    res.json({ code: 200, data: results1, msg: '同意加好友！' })
+                                } else {
+                                    res.json({ code: 200, data: results1, msg: '同意失败!' })
+                                }
+                            }
+                        })
+                    }else{
+                        res.json({ code: 200, data: results, msg: '已是好友！' })
+                    }
+                }else{
+                    res.json({ code: 200, data: results, msg: '无好友请求！' })
                 }
             }
         })
-    },
-    sweet: function(req, res) {
-        personalDAO.postPersonalSweet(function(err, results) {
-            if (err) {
-                res.json({ code: 500, msg: '搜索查询失败！' })
-            } else {
-                if (results.length > 0) {
-                    res.json({ code: 200, data: results, msg: '搜索查询成功！' })
-                } else {
-                    res.json({ code: 200, data: results, msg: '查无此人！' })
+        
+    
+},
+    // addGift: function(req, res) {
+    //     personalDAO.postPersonalAddGift(function(err, results) {
+    //         if (err) {
+    //             res.json({ code: 500, msg: '搜索查询失败！' })
+    //         } else {
+    //             if (results.length > 0) {
+    //                 res.json({ code: 200, data: results, msg: '搜索查询成功！' })
+    //             } else {
+    //                 res.json({ code: 200, data: results, msg: '查无此人！' })
 
-                }
-            }
-        })
-    }
+    //             }
+    //         }
+    //     })
+    // }
 }
 module.exports = personalController

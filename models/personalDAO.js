@@ -136,8 +136,25 @@ var personalDAO = {
         })
     },
 
-    postPersonaladdFriend: function(callback) {
+    postPersonaladdFriend: function(oId,userId,callback) {
 
+        DAO('insert into friends(user_Id,fri_Id,fri_classified,fri_status) values (?,?,0,0)', [userId,oId], function(err, results) {
+            if (err) {
+                callback(err, null)
+            } else {
+                callback(null, results)
+            }
+        })
+    },
+    //同意加好友
+    agreeFriend: function(oId,userId,callback) {
+        DAO('update friends set fri_status = 1 where user_Id = ? and fri_Id = ?', [oId,userId], function(err, results) {
+            if (err) {
+                callback(err, null)
+            } else {
+                callback(null, results)
+            }
+        })
     },
     postPersonalAddGift: function(callback) {
 
