@@ -26,6 +26,33 @@ var listDAO = {
             callback(null, results)
         }
         })
-    }
+    },
+    mycrazy: function(userId,callback){
+        DAO('SELECT rowno,用户ID FROM(SELECT (@rowNO := @rowNo+1) AS rowno,a.* FROM (SELECT * FROM crazyRank) a ,(SELECT @rowNO :=0) b ) asd WHERE asd.用户ID= ? ',[userId],function(err,results){
+            if (err) {
+                callback(err, null)
+            } else {
+                callback(null, results)
+            }
+        })
+    },
+    mycharm: function(userId,callback){
+        DAO('SELECT rowno,用户ID FROM(SELECT (@rowNO := @rowNo+1) AS rowno,a.* FROM (SELECT * FROM beautRank) a ,(SELECT @rowNO :=0) b ) asd WHERE asd.用户ID= ? ',[userId],function(err,results){
+            if (err) {
+                callback(err, null)
+            } else {
+                callback(null, results)
+            }
+        })
+    },
+    mysweetChart: function(userId,callback){
+        DAO('SELECT rowno,用户ID FROM(SELECT (@rowNO := @rowNo+1) AS rowno,a.* FROM (SELECT * FROM sweetRank) a ,(SELECT @rowNO :=0) b ) asd WHERE asd.用户ID= ? ',[userId],function(err,results){
+            if (err) {
+                callback(err, null)
+            } else {
+                callback(null, results)
+            }
+        })
+    },
 }
 module.exports = listDAO
