@@ -5,7 +5,7 @@ var shopController = require('../controllers/shopControllers')
 
 
 // 商品
-router.post('/product', passport.authenticate('jwt', { session: false }), function(req, res, next) {
+router.get('/product', passport.authenticate('jwt', { session: false }), function(req, res, next) {
     shopController.product(req, res)
 });
 // 会员中心
@@ -13,7 +13,7 @@ router.get('/memeber', passport.authenticate('jwt', { session: false }), functio
     shopController.member(req, res)
 });
 // 充值中心
-router.get('/charge', passport.authenticate('jwt', { session: false }), function(req, res, next) {
+router.post('/charge', passport.authenticate('jwt', { session: false }), function(req, res, next) {
     shopController.charge(req, res)
 });
 // 道具
