@@ -51,7 +51,7 @@ var userDAO = {
     //送出礼物
     from_Presents: function(userId, callback) {
         // console.log(user)
-        DAO('select from_Id,nickName,gift,prop_Name,sum(giftNum) from gift,base_info,props where from_Id=base_info_Id and prop_Id=gift and from_Id=? group by from_Id,gift', [userId], function(err, results) {
+        DAO('select to_Id,nickName,gift,prop_Name,sum(giftNum) from gift,base_info,props where from_Id=base_info_Id and prop_Id=gift and from_Id=? group by from_Id,gift', [userId], function(err, results) {
             if (err) {
                 callback(err, null)
             } else {
@@ -62,7 +62,7 @@ var userDAO = {
     //收到礼物
     to_Presents: function(userId, callback) {
         console.log(userId)
-        DAO('select to_Id,nickName,gift,prop_Name,sum(giftNum) from gift,base_info,props where to_Id=base_info_Id and prop_Id=gift and to_Id=? group by to_Id,gift', [userId], function(err, results) {
+        DAO('select to_Id,nickName,gift,prop_Name,sum(giftNum) from gift,base_info,props where from_Id=base_info_Id and prop_Id=gift and from_Id=? group by from_Id,gift', [userId], function(err, results) {
             if (err) {
                 callback(err, null)
             } else {

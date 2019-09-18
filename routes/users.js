@@ -5,31 +5,31 @@ var userController = require('../controllers/userControllers')
 var request = require('request');
 var querystring = require('querystring');
 /* GET users listing. */
-router.get('/',passport.authenticate('jwt',{session:false}) , function (req, res, next) {
+router.get('/', passport.authenticate('jwt', { session: false }), function(req, res, next) {
     res.send('respond with a resource');
 });
 /*登录*/
-router.post('/login', function (req, res, next) {
-    userController.login(req, res)
-})
-/*注册*/
-router.post('/register', function (req, res, next) {
+router.post('/login', function(req, res, next) {
+        userController.login(req, res)
+    })
+    /*注册*/
+router.post('/register', function(req, res, next) {
     userController.register(req, res)
 });
 /*认证*/
-router.post('/identification',passport.authenticate('jwt',{session:false}) , function (req, res, next) {
+router.post('/identification', passport.authenticate('jwt', { session: false }), function(req, res, next) {
     userController.identification(req, res)
 });
 // 更改头像
-router.post('/updateHeadPic',passport.authenticate('jwt',{session:false}) , function (req, res, next) {
+router.post('/updateHeadPic', passport.authenticate('jwt', { session: false }), function(req, res, next) {
     userController.updateHeadPic(req, res)
 });
 //修改密码
-router.post('/updatePassword',passport.authenticate('jwt',{session:false}) , function (req, res, next) {
+router.post('/updatePassword', passport.authenticate('jwt', { session: false }), function(req, res, next) {
     userController.updatePassword(req, res)
 });
 // 忘记密码
-router.post('/forgetPassword',passport.authenticate('jwt',{session:false}) , function (req, res, next) {
+router.post('/forgetPassword', passport.authenticate('jwt', { session: false }), function(req, res, next) {
     userController.forgetPassword(req, res)
 });
 // 验证码
@@ -40,14 +40,13 @@ router.get('/vCode/:telephone', function(req, res, next) {
     // console.log(req.body)
     var tel = req.params.telephone
     var code = ''
-for(var i=0;i<6;i++)
-{
-    code += Math.floor(Math.random()*10);
-}
-        //手机号和验证码存到session
+    for (var i = 0; i < 6; i++) {
+        code += Math.floor(Math.random() * 10);
+    }
+    //手机号和验证码存到session
     console.log(tel)
     req.session.TelvCode = []
-    req.session.TelvCode.push({telephone:tel,vCode:code})
+    req.session.TelvCode.push({ telephone: tel, vCode: code })
     console.log(req.session.TelvCode)
     console.log('保存到session里面的手机号' + req.session.TelvCode[0].telephone)
     console.log('保存到session里面的手机号验证码' + req.session.TelvCode[0].vCode)
@@ -77,19 +76,19 @@ for(var i=0;i<6;i++)
 })
 
 // 修改信息、完善信息
-router.post('/updateInfo',passport.authenticate('jwt',{session:false}) , function (req, res, next) {
+router.post('/updateInfo', passport.authenticate('jwt', { session: false }), function(req, res, next) {
     userController.updateInfo(req, res)
 });
 // 送出的礼物
-router.post('/from_Presents',passport.authenticate('jwt',{session:false}) , function (req, res, next) {
+router.post('/from_Presents', passport.authenticate('jwt', { session: false }), function(req, res, next) {
     userController.from_Presents(req, res)
 });
 // 收到礼物
-router.get('/to_Presents',passport.authenticate('jwt',{session:false}) , function (req, res, next) {
+router.get('/to_Presents', passport.authenticate('jwt', { session: false }), function(req, res, next) {
     userController.to_Presents(req, res)
 });
 // 用户其他信息
-router.get('/userInfo',passport.authenticate('jwt',{session:false}) , function (req, res, next) {
+router.get('/userInfo', passport.authenticate('jwt', { session: false }), function(req, res, next) {
     userController.userInfo(req, res)
 });
 module.exports = router;
