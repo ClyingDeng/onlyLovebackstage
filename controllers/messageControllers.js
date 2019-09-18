@@ -9,87 +9,45 @@ var Step = require('step')
 var messageController = {
     friendList: function(req, res) {
         var userId = req.user[0].base_info_Id
-        console.log(userId)
+            // console.log(req.user)
+        console.log('我的：' + userId)
         messageDAO.friendList(userId, function(err, results) {
             if (err) {
                 res.json({ code: 500, msg: '好友列表查询失败！' })
             } else {
-                console.log(results.length)
-
-                //有不止一个好友
+                // console.log(results)
                 if (results.length > 0) {
-                    // Step(
-                    function infos(fri_Id) {
-                        var friends = []
-                        personalDAO.getPersonalManyInfo(fri_Id, function(err, results2) {
-                            if (err) {
-                                res.json({ code: 500, msg: '搜索查询失败！' })
-                            } else {
-                                if (results2.length > 0) {
-
-                                    friends.push(results2)
-                                    console.log('friends还有吗：')
-                                    console.log(friends)
-                                    return friends
+                    messageDAO.friends(userId, function(err, results1) {
+                        if (err) {
+                            res.json({ code: 500, msg: '好友列表查询失败！' })
+                        } else {
+                            console.log('好友')
+                            console.log(results1[0])
+                            messageDAO.attFriends(userId, function(err, results2) {
+                                if (err) {
+                                    res.json({ code: 500, msg: '好友列表查询失败！' })
                                 } else {
-                                    res.json({ code: 200, data: results, msg: '查无此人！' })
+                                    console.log('关注')
+                                    console.log(results2[0])
+                                    results1[1] = results2[0]
+                                    console.log(results1)
+                                    messageDAO.blackFriends(userId, function(err, results3) {
+                                        if (err) {
+                                            res.json({ code: 500, msg: '好友列表查询失败！' })
+                                        } else {
+                                            console.log('黑名单')
+                                            console.log(results3[0])
+                                            results1[2] = results2[0]
+                                            res.json({ code: 200, data: results1, msg: '好友列表查询成功！' })
+
+                                        }
+                                    })
                                 }
-                            }
-                        })
-                    }
-                    //遍历好友列表，带回好友基本信息
-                    function forFriends(results, userId) {
-                        console.log(results)
-                        var friends = []
-                        for (var i = 0; i < results.length; i++) {
-                            //fri_Id是自己
-                            if (results[i].fri_Id == userId) {
-                                DAO('select user_Id from friends where fri_Id = ?', [results[i].fri_Id], function(err, results1) {
-                                    if (err) {
-                                        res.json({ code: 500, msg: '你的好友列表查询失败！' })
-                                    } else {
-                                        console.log(results1)
-                                        console.log('fri_Id是自己' + i - 1)
-                                        console.log(results1[i - 1].user_Id)
-                                        console.log('调用infos：')
-                                        console.log(infos(results1[i - 1].user_Id))
-                                        friends.push(infos(results1[i - 1].user_Id))
-                                        return friends
-                                    }
-                                })
-
-                            } else {
-                                DAO('select fri_Id from friends where user_Id = ?', [userId], function(err, results1) {
-                                    if (err) {
-                                        res.json({ code: 500, msg: '你的好友列表查询失败！' })
-                                    } else {
-                                        console.log('user_Id是自己')
-                                        console.log(results1[i - 1].fri_Id)
-                                        console.log('调用infos：')
-                                        console.log(infos(results1[i - 1].user_Id))
-                                        console.log('好友呢')
-                                        console.log(friends)
-                                    }
-                                })
-                                return friends
-                            }
+                            })
                         }
-                    }
-
-                    function showFriends(results, userId) {
-                        console.log('遍历好友：')
-                        forFriends(results, userId)
-                        var friend = forFriends(results, userId)
-                        console.log(friend)
-                        res.json({ code: 200, data: friend, msg: '好友列表查询成功！' })
-                    }
-
-
-                    // )
-                    showFriends(results, userId)
-
+                    })
                 } else {
-                    res.json({ code: 200, data: results, msg: '没有好友！' })
+                    res.json({ code: 200, data: results, msg: '好友列表无好友！' })
                 }
             }
 

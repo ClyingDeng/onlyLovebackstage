@@ -1,7 +1,38 @@
 var DAO = require('./DAO')
 var messageDAO = {
     friendList: function(userId, callback) {
-        DAO('select fri_Id,user_Id from friends where (user_Id = ? or fri_Id = ?)and fri_status = 1', [userId,userId], function(err, results) {
+        DAO('select fri_Id,user_Id from friends where (user_Id = 20003 or fri_Id = 20003)and fri_status = 1', [userId, userId], function(err, results) {
+            // console.log(results)
+            if (err) {
+                callback(err, null)
+            } else {
+                callback(null, results)
+            }
+        })
+    },
+    friends: function(userId, callback) {
+        DAO('call pro_friends(?,0);', [userId], function(err, results) {
+            // console.log(results)
+            if (err) {
+                callback(err, null)
+            } else {
+                callback(null, results)
+            }
+        })
+    },
+    attFriends: function(userId, callback) {
+        DAO('call pro_friends(?,1);', [userId], function(err, results) {
+            // console.log(results)
+            if (err) {
+                callback(err, null)
+            } else {
+                callback(null, results)
+            }
+        })
+    },
+    blackFriends: function(userId, callback) {
+        DAO('call pro_friends(?,2);', [userId], function(err, results) {
+            // console.log(results)
             if (err) {
                 callback(err, null)
             } else {

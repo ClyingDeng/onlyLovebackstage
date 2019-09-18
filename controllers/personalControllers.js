@@ -131,7 +131,7 @@ var personalController = {
                             }
                         }
                     })
-                } else if(sweet < 50) {
+                } else if (sweet < 50) {
                     personalDAO.getSecondSweet(oId, function(err, results1) {
                         if (err) {
                             res.json({ code: 500, msg: '搜索查询失败！' })
@@ -146,7 +146,7 @@ var personalController = {
                             }
                         }
                     })
-                }else if(sweet < 99){
+                } else if (sweet < 99) {
                     personalDAO.getThirdSweet(oId, function(err, results1) {
                         if (err) {
                             res.json({ code: 500, msg: '搜索查询失败！' })
@@ -161,7 +161,7 @@ var personalController = {
                             }
                         }
                     })
-                }else if(sweet < 199){
+                } else if (sweet < 199) {
                     personalDAO.getFourthSweet(oId, function(err, results1) {
                         if (err) {
                             res.json({ code: 500, msg: '搜索查询失败！' })
@@ -176,7 +176,7 @@ var personalController = {
                             }
                         }
                     })
-                }else if(sweet <= 299){
+                } else if (sweet <= 299) {
                     personalDAO.getFifthSweet(oId, function(err, results1) {
                         if (err) {
                             res.json({ code: 500, msg: '搜索查询失败！' })
@@ -191,7 +191,7 @@ var personalController = {
                             }
                         }
                     })
-                }else{
+                } else {
                     personalDAO.getSixthSweet(oId, function(err, results1) {
                         if (err) {
                             res.json({ code: 500, msg: '搜索查询失败！' })
@@ -217,60 +217,60 @@ var personalController = {
 
     },
     addFriend: function(req, res) {
-        
+
         var oId = req.params.oId
         var userId = req.user[0].base_info_Id
         console.log('对方账号：' + oId)
         console.log('我自己的账号：' + userId)
-        personalDAO.postPersonaladdFriend(oId,userId,function(err, results) {
+        personalDAO.postPersonaladdFriend(oId, userId, function(err, results) {
             if (err) {
                 res.json({ code: 500, msg: '搜索查询失败！' })
             } else {
                 // console.log(results)
                 if (results.affectedRows > 0) {
-                    res.json({ code: 200, data: results, msg: '加好友请求发送成功！' })
+                    res.json({ code: 200, affectedRows: results.affectedRows, msg: '加好友请求发送成功！' })
                 } else {
-                    res.json({ code: 200, data: results, msg: '加好友请求发送失败！' })
+                    res.json({ code: 200, affectedRows: results.affectedRows, msg: '加好友请求发送失败！' })
                 }
             }
         })
     },
-    agreeFriend:function(req,res){
+    agreeFriend: function(req, res) {
         var oId = req.params.oId
         var userId = req.user[0].base_info_Id
         console.log('对方账号：' + oId)
         console.log('我自己的账号：' + userId)
-        //无好友请求
-        DAO('select fri_status from friends where user_Id = ? and fri_Id = ? ', [oId,userId], function(err, results) {
+            //无好友请求
+        DAO('select fri_status from friends where user_Id = ? and fri_Id = ? ', [oId, userId], function(err, results) {
             if (err) {
                 res.json({ code: 500, msg: '搜索查询失败！' })
             } else {
                 // console.log(results)
-                if(results){
-                    if(results[0].fri_status == 0){
+                if (results) {
+                    if (results[0].fri_status == 0) {
                         //有好友请求
-                        personalDAO.agreeFriend(oId,userId,function(err, results1) {
+                        personalDAO.agreeFriend(oId, userId, function(err, results1) {
                             if (err) {
                                 res.json({ code: 500, msg: '搜索查询失败！' })
                             } else {
                                 if (results1.affectedRows > 0) {
-                                    res.json({ code: 200, data: results1, msg: '同意加好友！' })
+                                    res.json({ code: 200, affectedRows: results1.affectedRows, msg: '同意加好友！' })
                                 } else {
-                                    res.json({ code: 200, data: results1, msg: '同意失败!' })
+                                    res.json({ code: 200, affectedRows: results1.affectedRows, msg: '同意失败!' })
                                 }
                             }
                         })
-                    }else{
+                    } else {
                         res.json({ code: 200, data: results, msg: '已是好友！' })
                     }
-                }else{
+                } else {
                     res.json({ code: 200, data: results, msg: '无好友请求！' })
                 }
             }
         })
-        
-    
-},
+
+
+    },
     // addGift: function(req, res) {
     //     personalDAO.postPersonalAddGift(function(err, results) {
     //         if (err) {
