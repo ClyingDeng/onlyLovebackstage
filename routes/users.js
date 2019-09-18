@@ -47,6 +47,10 @@ router.post('/from_Presents',passport.authenticate('jwt',{session:false}) , func
 router.get('/to_Presents',passport.authenticate('jwt',{session:false}) , function (req, res, next) {
     userController.to_Presents(req, res)
 });
+// 道具
+router.get('/props',passport.authenticate('jwt',{session:false}) , function (req, res, next) {
+    userController.props(req, res)
+});
 // 用户其他信息
 router.get('/userInfo',passport.authenticate('jwt',{session:false}) , function (req, res, next) {
     userController.userInfo(req, res)
