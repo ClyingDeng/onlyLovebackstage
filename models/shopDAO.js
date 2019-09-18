@@ -1,7 +1,38 @@
 var DAO = require('./DAO')
 var shopDAO = {
-    getShopProduct: function(userId, callback) {
-        DAO('select props.prop_Name,if(member_grade>=1,prop_price*0.8,prop_price)as prop_price from (select nickName,member_grade from base_info,memberinfos where base_info_id = ?)as a,props GROUP BY props.prop_Name', [userId], function(err, results) {
+    getmembergrade: function(userId, callback) {
+        // console.log(userId)
+        DAO('select member_grade from memberinfos where member_user_Id = ?', [userId], function(err, results) {
+            console.log(results)
+            if (err) {
+                callback(err, null)
+            } else {
+                callback(null, results)
+            }
+        })
+    },
+    getShopProduct: function(callback) {
+        DAO('select prop_Id,prop_Name,prop_pic,prop_price from props', null, function(err, results) {
+            console.log(results)
+            if (err) {
+                callback(err, null)
+            } else {
+                callback(null, results)
+            }
+        })
+    },
+    getShopProduct1: function(callback) {
+        DAO('select prop_Id,prop_Name,prop_pic,prop_price*0.88 prop_price from props', null, function(err, results) {
+            console.log(results)
+            if (err) {
+                callback(err, null)
+            } else {
+                callback(null, results)
+            }
+        })
+    },
+    getShopProduct2: function(callback) {
+        DAO('select prop_Id,prop_Name,prop_pic,prop_price*0.78 prop_price from props', null, function(err, results) {
             console.log(results)
             if (err) {
                 callback(err, null)
@@ -42,7 +73,7 @@ var shopDAO = {
         })
     },
     getShopProps: function(user, callback) {
-        DAO('select owners,prop_Name,number,prop_fun_intimacy,have_Time from have_props,props where have_props.props_Id = props.prop_Id and owners = ? ', [user.userId], function(err, results) {
+        DAO('select owners,prop_Id,prop_Name,prop_pic,number,prop_fun_intimacy,have_Time from have_props,props where have_props.props_Id = props.prop_Id and owners = ? ', [user.userId], function(err, results) {
             console.log(results)
             if (err) {
                 callback(err, null)
@@ -73,7 +104,7 @@ var shopDAO = {
     },
     getprice:function(user,callback){
         console.log(user)
-        DAO('select prop_price,integral,member_grade from props,base_info,memberinfos where prop_Id=? and base_info_Id = ? and member_user_Id = base_info_Id ', [user.propsId,user.userId], function(err, results) {
+        DAO('select prop_price,integral from props,base_info where prop_Id=? and base_info_Id = ?  ', [user.propsId,user.userId], function(err, results) {
             // console.log(results)
             if (err) {
                 callback(err, null)

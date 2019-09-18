@@ -38,7 +38,7 @@ var hotSearchController = {
                                 if(err){
                                     res.status(500).json({ msg: '添加点赞失败！' })
                                 }else{
-                                    res.json({ code: 200, data: results, msg: '动态发布成功！', 动态ID:results1[0],发布动态: conuser })
+                                    res.json({ code: 200, affectedRows: results.affectedRows, msg: '动态发布成功！', 动态ID:results1[0],发布动态: conuser })
                                 }
                             })
                         }
