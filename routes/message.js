@@ -4,7 +4,7 @@ var passport = require('passport')
 var messageController = require('../controllers/messageControllers')
 
 // 好友列表
-router.post('/friendList', passport.authenticate('jwt', { session: false }), function(req, res, next) {
+router.get('/friendList', passport.authenticate('jwt', { session: false }), function(req, res, next) {
     messageController.friendList(req, res)
 });
 // 关注
