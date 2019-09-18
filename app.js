@@ -10,7 +10,7 @@ var usersRouter = require('./routes/users');
 var searchRouter = require('./routes/search');
 var hotSearchRouter = require('./routes/hotSearch')
 var listRouter = require('./routes/list')
-var messageRouter = require('./routes/meaasge')
+var messageRouter = require('./routes/message')
 var personalRouter = require('./routes/personal')
 var shopRouter = require('./routes/shop')
 

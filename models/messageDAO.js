@@ -1,7 +1,7 @@
 var DAO = require('./DAO')
 var messageDAO = {
     friendList: function(userId, callback) {
-        DAO('select * from friends,base_info where base_info_Id = ?', [userId], function(err, results) {
+        DAO('select fri_Id,user_Id from friends where (user_Id = ? or fri_Id = ?)and fri_status = 1', [userId,userId], function(err, results) {
             if (err) {
                 callback(err, null)
             } else {
