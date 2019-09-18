@@ -60,6 +60,37 @@ var shopDAO = {
                 callback(null, results)
             }
         })
+    },
+    getbackpack:function(userId,callback){
+        DAO('select * from backpack where owners = ?', [userId], function(err, results) {
+            // console.log(results)
+            if (err) {
+                callback(err, null)
+            } else {
+                callback(null, results)
+            }
+        })
+    },
+    getprice:function(user,callback){
+        console.log(user)
+        DAO('select prop_price,integral,member_grade from props,base_info,memberinfos where prop_Id=? and base_info_Id = ? and member_user_Id = base_info_Id ', [user.propsId,user.userId], function(err, results) {
+            // console.log(results)
+            if (err) {
+                callback(err, null)
+            } else {
+                callback(null, results)
+            }
+        })
+    },
+    updateintegral:function(user,integral,callback){
+        DAO('update base_info set integral = ?  where base_info_Id = ? ', [integral,user.userId], function(err, results) {
+            // console.log(results)
+            if (err) {
+                callback(err, null)
+            } else {
+                callback(null, results)
+            }
+        })
     }
 }
 module.exports = shopDAO
