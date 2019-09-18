@@ -79,16 +79,24 @@ router.get('/vCode/:telephone', function(req, res, next) {
 router.post('/updateInfo', passport.authenticate('jwt', { session: false }), function(req, res, next) {
     userController.updateInfo(req, res)
 });
-// 送出的礼物
-router.post('/from_Presents', passport.authenticate('jwt', { session: false }), function(req, res, next) {
-    userController.from_Presents(req, res)
-});
-// 收到礼物
-router.get('/to_Presents', passport.authenticate('jwt', { session: false }), function(req, res, next) {
-    userController.to_Presents(req, res)
-});
 // 用户其他信息
 router.get('/userInfo', passport.authenticate('jwt', { session: false }), function(req, res, next) {
     userController.userInfo(req, res)
+});
+// 送出的礼物搜索
+router.post('/from_Presents', passport.authenticate('jwt', { session: false }), function(req, res, next) {
+    userController.from_Presents(req, res)
+});
+// 送出的礼物
+router.post('/from_Present', passport.authenticate('jwt', { session: false }), function(req, res, next) {
+    userController.from_Present(req, res)
+});
+// 收到礼物搜索
+router.get('/to_Presents', passport.authenticate('jwt', { session: false }), function(req, res, next) {
+    userController.to_Presents(req, res)
+});
+// 收到礼物
+router.get('/to_Present', passport.authenticate('jwt', { session: false }), function(req, res, next) {
+    userController.to_Present(req, res)
 });
 module.exports = router;

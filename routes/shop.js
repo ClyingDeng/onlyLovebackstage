@@ -24,4 +24,8 @@ router.post('/props', passport.authenticate('jwt', { session: false }), function
 router.get('/backpack', passport.authenticate('jwt', { session: false }), function(req, res, next) {
     shopController.backpack(req, res)
 });
+//购买会员
+router.post('/buymember', passport.authenticate('jwt', { session: false }), function(req, res, next) {
+    shopController.buymember(req, res)
+});
 module.exports = router;

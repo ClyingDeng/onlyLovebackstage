@@ -64,7 +64,7 @@ var shopDAO = {
     },
     getintegral: function(user, callback) {
         DAO('select integral from base_info WHERE base_info_Id = ?', [user.userId], function(err, results) {
-            console.log(results)
+            // console.log(results)
             if (err) {
                 callback(err, null)
             } else {
@@ -115,6 +115,16 @@ var shopDAO = {
     },
     updateintegral:function(user,integral,callback){
         DAO('update base_info set integral = ?  where base_info_Id = ? ', [integral,user.userId], function(err, results) {
+            // console.log(results)
+            if (err) {
+                callback(err, null)
+            } else {
+                callback(null, results)
+            }
+        })
+    },
+    buymember:function(user,callback){
+        DAO('update memberinfos set member_status = 1,member_date = member_date + ?,member_grade=1,member_status=0   where member_user_Id = ? ', [user.day,user.userId], function(err, results) {
             // console.log(results)
             if (err) {
                 callback(err, null)
