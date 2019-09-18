@@ -20,4 +20,8 @@ router.post('/charge', passport.authenticate('jwt', { session: false }), functio
 router.post('/props', passport.authenticate('jwt', { session: false }), function(req, res, next) {
     shopController.props(req, res)
 });
+//个人背包
+router.get('/backpack', passport.authenticate('jwt', { session: false }), function(req, res, next) {
+    shopController.backpack(req, res)
+});
 module.exports = router;
