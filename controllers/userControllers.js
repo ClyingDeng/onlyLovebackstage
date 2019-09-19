@@ -3,14 +3,15 @@ var formidable = require('formidable')
 var path = require('path')
 var bcrypt = require('bcrypt')
 var jwt = require('jsonwebtoken')
+var personalDAO = require('../models/personalDAO')
 var userController = {
-    changeName: function (req, res) {
+    changeName: function(req, res) {
 
     },
     // 登录
-    login: function (req, res) {
+    login: function(req, res) {
         var user = { telephone: req.body.telephone, password: req.body.password }
-        userDAO.login(user, function (err, results) {
+        userDAO.login(user, function(err, results) {
             if (err) {
                 res.status(500).json({ msg: '数据库错误，登录失败！' })
             } else {
@@ -19,15 +20,15 @@ var userController = {
                     // console.log(user.password)
                     res.status(200).json({ msg: '手机号不存在，登录失败！' })
                 } else {
-                    bcrypt.compare(user.password, results[0].pwd, function (err, resPwd) {
+                    bcrypt.compare(user.password, results[0].pwd, function(err, resPwd) {
                         // res == true
                         // console.log(user.password)
                         if (resPwd) {
                             //记录登录成功后的token
-                            jwt.sign({ telephone: user.telephone }, 'privateKey', { expiresIn: 60 * 60 }, function (err, token) {
+                            jwt.sign({ telephone: user.telephone }, 'privateKey', { expiresIn: 60 * 60 }, function(err, token) {
                                 console.log(token);
                                 console.log(req.user)
-                                //注意token的固定格式“Bearer ”前缀
+                                    //注意token的固定格式“Bearer ”前缀
                                 res.status(200).json({ msg: '登录成功！！', token: 'Bearer ' + token })
                             });
                         } else {
@@ -41,16 +42,16 @@ var userController = {
         })
     },
     // 注册
-    register: function (req, res) {
+    register: function(req, res) {
 
         //接收用户请求传入的参数，并创建用户对象
         var user = { telephone: req.body.telephone, password: req.body.password, vCode: req.body.code }
-        // console.log(user)
-        bcrypt.genSalt(10, function (err, salt) {
-            bcrypt.hash(user.password, salt, function (err, hash) {
+            // console.log(user)
+        bcrypt.genSalt(10, function(err, salt) {
+            bcrypt.hash(user.password, salt, function(err, hash) {
                 //hash是加密后的字符
                 user.password = hash
-                userDAO.register(user, function (err, results) {
+                userDAO.register(user, function(err, results) {
                     if (err) {
                         console.log(err)
                         res.status(500).json({ msg: '手机号已存在，注册失败！' + err })
@@ -60,7 +61,7 @@ var userController = {
                             if (req.session.TelvCode[i].telephone == user.telephone && req.session.TelvCode[i].vCode == user.vCode) {
                                 res.status(200).json({ msg: '验证码正确，注册成功！' })
                                 delete req.session.TelvCode[i];
-                                if (req.session.TelvCode[i] == " " || req.session.TelvCode[i] == null || typeof (req.session.TelvCode[i]) == "undefined") {
+                                if (req.session.TelvCode[i] == " " || req.session.TelvCode[i] == null || typeof(req.session.TelvCode[i]) == "undefined") {
                                     req.session.TelvCode.splice(i, 1);
                                     i = i - 1;
                                 }
@@ -76,21 +77,21 @@ var userController = {
         });
     },
     // 修改密码
-    updatePassword: function (req, res) {
+    updatePassword: function(req, res) {
         var userId = req.user[0].base_info_Id
         var orguserpwd = req.body.orguserpwd
         var userpwd = req.body.userpwd
-        bcrypt.genSalt(10, function (err, salt) {
-            userDAO.getPassword(userId, function (err, results1) {
+        bcrypt.genSalt(10, function(err, salt) {
+            userDAO.getPassword(userId, function(err, results1) {
                 if (err) {
                     res.json({ code: 500, msg: '查询密码失败！' })
                 } else {
                     bcrypt.compare(orguserpwd, results1[0].pwd, (err, res1) => {
                         if (res1) {
-                            bcrypt.hash(userpwd, salt, function (err, hash) {
+                            bcrypt.hash(userpwd, salt, function(err, hash) {
                                 userpwd = hash
-                                // console.log('哈哈哈哈' + hash)
-                                userDAO.updatePassword({ userId: userId, pwd: userpwd }, function (err, results) {
+                                    // console.log('哈哈哈哈' + hash)
+                                userDAO.updatePassword({ userId: userId, pwd: userpwd }, function(err, results) {
                                     if (err) {
                                         res.json({ code: 500, msg: '用户修改密码失败！' })
                                     } else {
@@ -112,24 +113,24 @@ var userController = {
         });
     },
     //上传头像
-    updateHeadPic: function (req, res) {
+    updateHeadPic: function(req, res) {
         var form = new formidable.IncomingForm() //创建上传表单对象
         form.uploadDir = path.join(__dirname, '..', '/public/upload') //设置上传文件的路径
         form.keepExtensions = true //设置保留上传文件的扩展名
-        form.parse(req, function (err, fields, files) {
+        form.parse(req, function(err, fields, files) {
             if (err) {
                 res.send('头像上传错误！')
             }
             console.log('...................')
-            //fields是上传的表单字段数组，files是上传的文件列表
+                //fields是上传的表单字段数组，files是上传的文件列表
             console.log(files)
-            //保存图片路径到数据库
-            //1.获取当前用户编号
+                //保存图片路径到数据库
+                //1.获取当前用户编号
             var userId = req.user[0].base_info_Id
-            //2.获取当前用户的图片名称
+                //2.获取当前用户的图片名称
             var headPic = path.parse(files.file.path).base
             console.log(headPic)
-            userDAO.upload({ file: headPic, userId: userId }, function (err, results) {
+            userDAO.upload({ file: headPic, userId: userId }, function(err, results) {
                 //    console.log(user.headPic)
                 if (err) {
                     res.json({ code: 500, msg: '头像文件失败！' })
@@ -141,9 +142,9 @@ var userController = {
 
     },
     // 修改个人信息
-    updateInfo: function (req, res) {
+    updateInfo: function(req, res) {
         var user = { userId: req.user[0].base_info_Id, nickName: req.body.nickName, age: req.body.age, sex: req.body.sex, constellation: req.body.constellation, love_description: req.body.love_description, birthday: req.body.birthday, hobby: req.body.hobby, choose_object: req.body.choose_object, province: req.body.province, city: req.body.city, location_detail: req.body.location_detail, marriage: req.body.marriage, love_affair: req.body.love_affair, height: req.body.height, weight: req.body.weight, education: req.body.education, occupation: req.body.occupation, salary: req.body.salary, blight: req.body.blight, use_status: req.body.use_status, house: req.body.house, car: req.body.car, integral: req.body.integral }
-        userDAO.updateInfo(user, function (err, results) {
+        userDAO.updateInfo(user, function(err, results) {
             console.log(results)
             if (err) {
                 console.log(err)
@@ -158,12 +159,12 @@ var userController = {
         })
     },
     //用户其他信息
-    userInfo: function (req, res) {
+    userInfo: function(req, res) {
         // var oId = req.params.uId 2o;
         // console.log(req.user)
         var userId = req.user[0].base_info_Id
         console.log(userId)
-        userDAO.userInfo_member(userId, function (err, results) {
+        userDAO.userInfo_member(userId, function(err, results) {
 
             if (err) {
                 res.json({ code: 500, msg: '搜索查询失败！' })
@@ -178,10 +179,10 @@ var userController = {
 
     },
     //送出礼物搜索
-    from_Presents: function (req, res) {
+    from_Presents: function(req, res) {
         var userId = req.body.to_Id
-        // var gift = req.body.gift
-        userDAO.from_Presents(userId, function (err, results) {
+            // var gift = req.body.gift
+        userDAO.from_Presents(userId, function(err, results) {
             if (err) {
                 res.json({ code: 500, msg: '用户送出礼物失败！' + err })
             } else {
@@ -190,18 +191,18 @@ var userController = {
                 //     res.json({ code: 500, msg: '用户送出礼物失败！' })
                 // } else {
                 res.json({ code: 200, data: results, msg: '用户送出礼物成功！' })
-                // }
+                    // }
             }
         });
 
 
     },
     //送出礼物
-    from_Present: function (req, res) {
+    from_Present: function(req, res) {
         var userId = req.user[0].base_info_Id
 
         // var gift = req.body.gift
-        userDAO.from_Present(userId, function (err, results) {
+        userDAO.from_Present(userId, function(err, results) {
             if (err) {
                 res.json({ code: 500, msg: '用户送出礼物失败！' + err })
             } else {
@@ -210,20 +211,20 @@ var userController = {
                 //     res.json({ code: 500, msg: '用户送出礼物失败！' })
                 // } else {
                 res.json({ code: 200, data: results, msg: '用户送出礼物成功！' })
-                // }
+                    // }
             }
         });
 
 
     },
     //收到礼物搜索
-    to_Presents: function (req, res) {
+    to_Presents: function(req, res) {
         var fromId = req.body.from_Id
         var toId = req.user[0].base_info_Id
 
         console.log(toId)
-        // var gift = req.body.gift
-        userDAO.to_Presents(fromId, toId, function (err, results) {
+            // var gift = req.body.gift
+        userDAO.to_Presents(fromId, toId, function(err, results) {
             if (err) {
                 console.log(err)
                 res.json({ code: 500, msg: '用户收到礼物失败！' + err })
@@ -233,20 +234,20 @@ var userController = {
                 //     res.json({ code: 500, msg: '用户收到礼物失败！' })
                 // } else {
                 res.json({ code: 200, data: results, msg: '用户收到礼物成功！' })
-                // }
+                    // }
             }
         });
 
 
     },
     //收到礼物
-    to_Present: function (req, res) {
+    to_Present: function(req, res) {
         // var fromId = req.body.from_Id
         var userId = req.user[0].base_info_Id
 
         console.log(userId)
-        // var gift = req.body.gift
-        userDAO.to_Present(userId, function (err, results) {
+            // var gift = req.body.gift
+        userDAO.to_Present(userId, function(err, results) {
             if (err) {
                 console.log(err)
                 res.json({ code: 500, msg: '用户收到礼物失败！' + err })
@@ -257,11 +258,91 @@ var userController = {
                 // } else {
 
                 res.json({ code: 200, data: results, msg: '用户收到礼物成功！' })
-                // }
+                    // }
             }
         });
 
 
+    },
+    //查询其他信息
+    otherInfo: function(req, res) {
+        var userId = req.user[0].base_info_Id
+        console.log(userId)
+        personalDAO.getPersonalManyInfo(userId, function(err, results) {
+            if (err) {
+                res.json({ code: 500, msg: '用户其他信息查询失败！' + err })
+            } else {
+                if (results.length > 0) {
+                    var manyInfo = {}
+                    manyInfo = results
+                    personalDAO.getGrade(userId, function(err, results1) {
+                        if (err) {
+                            res.json({ code: 500, msg: '个人信息搜索查询失败！' })
+                        } else {
+                            console.log('等级：')
+                            console.log(results1)
+                            if (results1[0] == 0 || results1[0] == null) {
+                                manyInfo[0].grade = 0
+                            } else {
+                                manyInfo[0].grade = results1[0].member_grade
+                            }
+                            userDAO.OtherSweet(userId, function(err, results2) {
+                                if (err) {
+                                    res.json({ code: 500, msg: '用户信息搜索查询失败！' })
+                                } else {
+                                    // console.log(results2)
+                                    manyInfo[0].sweetObj = results2
+                                    res.json({ code: 200, data: manyInfo, msg: '用户其他信息查询成功！' })
+                                }
+                            })
+                        }
+                    })
+                }
+
+            }
+        })
+    },
+    //关注我的
+    attentionMe: function(req, res) {
+        var userId = req.user[0].base_info_Id
+        console.log(userId)
+        userDAO.attentionMe(userId, function(err, results) {
+            if (err) {
+                console.log(err)
+                res.json({ code: 500, msg: '关注我的用户基本信息查询失败！' + err })
+            } else {
+                res.json({ code: 200, data: results, msg: '关注我的用户基本信息查询成功！' })
+
+            }
+        })
+    },
+    //我关注的
+    iAttention: function(req, res) {
+        var userId = req.user[0].base_info_Id
+        console.log(userId)
+        userDAO.iAttention(userId, function(err, results) {
+            if (err) {
+                console.log(err)
+                res.json({ code: 500, msg: '我关注的用户基本信息查询失败！' + err })
+            } else {
+                res.json({ code: 200, data: results, msg: '我关注的用户基本信息查询成功！' })
+
+            }
+        })
+    },
+    //我关注的人的详情
+    iAttentionPerson: function(req, res) {
+        var userId = req.user[0].base_info_Id
+        console.log(userId)
+        userDAO.to_Present(userId, function(err, results) {
+            if (err) {
+                console.log(err)
+                res.json({ code: 500, msg: '用户收到礼物失败！' + err })
+            } else {
+                res.json({ code: 200, data: results, msg: '用户收到礼物成功！' })
+
+            }
+        })
     }
 }
 module.exports = userController

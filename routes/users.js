@@ -81,7 +81,7 @@ router.post('/updateInfo', passport.authenticate('jwt', { session: false }), fun
 });
 // 用户其他信息
 router.get('/userInfo', passport.authenticate('jwt', { session: false }), function(req, res, next) {
-    userController.userInfo(req, res)
+    userController.otherInfo(req, res)
 });
 // 送出的礼物搜索
 router.post('/from_Presents', passport.authenticate('jwt', { session: false }), function(req, res, next) {
@@ -98,5 +98,13 @@ router.get('/to_Presents', passport.authenticate('jwt', { session: false }), fun
 // 收到礼物
 router.get('/to_Present', passport.authenticate('jwt', { session: false }), function(req, res, next) {
     userController.to_Present(req, res)
+});
+//关注我的
+router.get('/attentionMe', passport.authenticate('jwt', { session: false }), function(req, res, next) {
+    userController.attentionMe(req, res)
+});
+//我关注的
+router.get('/iAttention', passport.authenticate('jwt', { session: false }), function(req, res, next) {
+    userController.iAttention(req, res)
 });
 module.exports = router;
