@@ -61,7 +61,7 @@ var personalController = {
                                                     console.log('动态：')
                                                     console.log(results4)
                                                     if (!results4[0]) {
-                                                        manyInfo[0].condition = 0
+                                                        manyInfo[0].condition = null
                                                     } else {
                                                         manyInfo[0].condition = results4
                                                     }
