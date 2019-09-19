@@ -59,9 +59,7 @@ var userDAO = {
     },
     // 修改个人信息
     updateInfo: function (user, callback) {
-        // console.log('啊哈哈哈哈' +results)
-
-        DAO('update base_info set nickName = ?,age = ? where base_info_Id= ?', [user.nickName, user.age, user.userId], function (err, results) {
+        DAO('update base_info set nickName = ?,age = ?,sex = ?,constellation = ?,love_description = ?,birthday=?,hobby=?,choose_object=?,province=?,city=?,location_detail=?,marriage=?,love_affair=?,body_status=?,height=?,weight=?,education=?,occupation=?,salary=?,blight=?,use_status=?,house=?,car=?,integral=? where base_info_Id= ?',[user.nickName, user.age,user.sex,user.constellation,user.love_description,user.birthday,user.hobby,user.choose_object,user.province,user.city,user.location_detail,user.marriage,user.love_affair,user.body_status,user.height,user.weight,user.education,user.occupation,user.salary,user.blight,user.use_status,user.house,user.car,user.integral ,user.userId], function (err, results) {
             if (err) {
                 callback(err, null)
             } else {
