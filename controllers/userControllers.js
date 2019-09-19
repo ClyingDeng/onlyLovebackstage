@@ -142,9 +142,7 @@ var userController = {
     },
     // 修改个人信息
     updateInfo: function (req, res) {
-        var user = { userId: req.user[0].base_info_Id, nickName: req.body.nickName, age: req.body.age }
-
-
+        var user = { userId: req.user[0].base_info_Id, nickName: req.body.nickName, age: req.body.age, sex: req.body.sex, constellation: req.body.constellation, love_description: req.body.love_description, birthday: req.body.birthday, hobby: req.body.hobby, choose_object: req.body.choose_object, province: req.body.province, city: req.body.city, location_detail: req.body.location_detail, marriage: req.body.marriage, love_affair: req.body.love_affair, height: req.body.height, weight: req.body.weight, education: req.body.education, occupation: req.body.occupation, salary: req.body.salary, blight: req.body.blight, use_status: req.body.use_status, house: req.body.house, car: req.body.car, integral: req.body.integral }
         userDAO.updateInfo(user, function (err, results) {
             console.log(results)
             if (err) {
