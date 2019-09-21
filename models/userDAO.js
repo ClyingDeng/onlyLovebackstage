@@ -26,9 +26,9 @@ var userDAO = {
         })
     },
     // 修改密码
-    updatePassword: function(user, callback) {
-        console.log(user)
-        DAO('update base_info set pwd = ? WHERE base_info_id = ?', [user.pwd, user.userId], function(err, results) {
+    updatePassword: function(userId, pwd, callback) {
+        // console.log(user)
+        DAO('update base_info set pwd = ? WHERE base_info_id = ?', [pwd, userId], function(err, results) {
             if (err) {
                 callback(err, null)
             } else {
@@ -154,7 +154,26 @@ var userDAO = {
                 callback(null, results)
             }
         })
-    }
+    },
+    exitTel: function(telephone, callback) {
+        DAO('select telephone from base_info where telephone = ?', [telephone], function(err, results) {
+            // console.log(results)
+            if (err) {
+                callback(err, null)
+            } else {
+                callback(null, results)
+            }
+        })
+    },
+    updateNewPassword: function(telephone, pwd, callback) {
+        DAO('update base_info set pwd = ? WHERE telephone = ?', [pwd, telephone], function(err, results) {
+            if (err) {
+                callback(err, null)
+            } else {
+                callback(null, results)
+            }
+        })
+    },
 
 }
 module.exports = userDAO
