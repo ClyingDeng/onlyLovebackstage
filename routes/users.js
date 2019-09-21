@@ -29,7 +29,7 @@ router.post('/updatePassword', passport.authenticate('jwt', { session: false }),
     userController.updatePassword(req, res)
 });
 // 忘记密码
-router.post('/forgetPassword', passport.authenticate('jwt', { session: false }), function(req, res, next) {
+router.post('/forgetPassword', function(req, res, next) {
     userController.forgetPassword(req, res)
 });
 // 验证码
@@ -107,4 +107,9 @@ router.get('/attentionMe', passport.authenticate('jwt', { session: false }), fun
 router.get('/iAttention', passport.authenticate('jwt', { session: false }), function(req, res, next) {
     userController.iAttention(req, res)
 });
+//订单
+router.get('/userOrder', passport.authenticate('jwt', { session: false }), function(req, res, next) {
+    userController.userOrder(req, res)
+});
+
 module.exports = router;

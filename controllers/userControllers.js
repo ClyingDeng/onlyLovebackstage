@@ -1,4 +1,5 @@
 var userDAO = require('../models/userDAO')
+var shopDAO = require('../models/shopDAO')
 var formidable = require('formidable')
 var path = require('path')
 var bcrypt = require('bcrypt')
@@ -22,7 +23,9 @@ var userController = {
                 } else {
                     bcrypt.compare(user.password, results[0].pwd, function(err, resPwd) {
                         // res == true
-                        // console.log(user.password)
+                        console.log(user.password)
+                        console.log(results[0].pwd) //加密
+                        console.log(resPwd)
                         if (resPwd) {
                             //记录登录成功后的token
                             jwt.sign({ telephone: user.telephone }, 'privateKey', { expiresIn: 60 * 60 }, function(err, token) {
@@ -41,6 +44,7 @@ var userController = {
             }
         })
     },
+
     // 注册
     register: function(req, res) {
 
@@ -54,7 +58,7 @@ var userController = {
                 userDAO.register(user, function(err, results) {
                     if (err) {
                         console.log(err)
-                        res.status(500).json({ msg: '手机号已存在，注册失败！' + err })
+                        res.json({ code: 500, msg: '手机号已存在，注册失败！' + err })
                     } else {
                         console.log(req.session.TelvCode)
                         for (var i = 0; i < req.session.TelvCode.length; i++) {
@@ -67,10 +71,81 @@ var userController = {
                                 }
                                 console.log(req.session.TelvCode)
                             } else {
-                                res.status(500).json({ code: 200, msg: '验证码输入失败，注册失败！' })
+                                res.json({ code: 200, msg: '验证码输入失败，注册失败！' })
                             }
 
                         }
+                    }
+                })
+            });
+        });
+    },
+    //忘记密码
+    forgetPassword: function(req, res) {
+        // var userId = req.user[0].base_info_Id
+        var user = { telephone: req.body.telephone, vCode: req.body.code, password: req.body.newPassword, password1: req.body.surePassword }
+
+        // console.log(userId)
+        bcrypt.genSalt(10, function(err, salt) {
+            bcrypt.hash(user.password, salt, function(err, hash) {
+                //hash是加密后的字符
+                user.password = hash
+                userDAO.exitTel(user.telephone, function(err, results) {
+                    if (err) {
+                        res.json({ code: 500, msg: '查询手机号失败！' + err })
+                    } else {
+                        console.log('数据库里面的手机号：' + results[0].telephone)
+                        console.log(req.session.TelvCode)
+                        console.log('laiba')
+
+                        console.log(req.session.TelvCode[0].vCode)
+                        console.log(user.vCode)
+                            //判断当前输入的手机号是否与注册手机号一致
+                        for (var i = 0; i < req.session.TelvCode.length; i++) {
+                            if (results[0].telephone == user.telephone) {
+                                //判断验证码
+                                if (req.session.TelvCode[i].vCode == user.vCode) {
+
+                                    //判断密码
+                                    bcrypt.compare(user.password1, user.password, (err, res1) => {
+                                            console.log('数据库密码：' + user.password)
+                                            console.log(user.password1)
+                                            console.log(res1)
+                                            if (res1) {
+                                                userDAO.updateNewPassword(user.telephone, user.password, function(err, results) {
+                                                    if (err) {
+                                                        res.json({ code: 500, msg: '数据库报错，用户设置新密码失败！' + err })
+                                                    } else {
+                                                        //检查该操作对数据表是否造成影响
+                                                        if (results.affectedRows == 0) {
+                                                            res.json({ code: 200, msg: '用户设置新密码失败！' })
+                                                        } else {
+                                                            res.json({ code: 200, affectedRows: results.affectedRows, msg: '用户设置新密码成功！' })
+
+                                                        }
+                                                    }
+                                                })
+                                            } else {
+                                                res.json({ code: 500, msg: '原密码输入错误！' })
+                                            }
+                                        })
+                                        //用完删除验证码
+                                    delete req.session.TelvCode[i];
+                                    if (req.session.TelvCode[i] == " " || req.session.TelvCode[i] == null || typeof(req.session.TelvCode[i]) == "undefined") {
+                                        req.session.TelvCode.splice(i, 1);
+                                        i = i - 1;
+                                    }
+                                    console.log(req.session.TelvCode)
+                                } else {
+                                    res.json({ code: 200, msg: '验证码输入失败，修改密码失败！' })
+                                }
+
+                            } else {
+                                res.json({ code: 200, msg: '手机号不一致，无法修改密码！' + err })
+                            }
+
+                        }
+
                     }
                 })
             });
@@ -87,11 +162,14 @@ var userController = {
                     res.json({ code: 500, msg: '查询密码失败！' })
                 } else {
                     bcrypt.compare(orguserpwd, results1[0].pwd, (err, res1) => {
+                        console.log('数据库密码：' + results1[0].pwd)
+                        console.log(res1)
                         if (res1) {
                             bcrypt.hash(userpwd, salt, function(err, hash) {
                                 userpwd = hash
                                     // console.log('哈哈哈哈' + hash)
-                                userDAO.updatePassword({ userId: userId, pwd: userpwd }, function(err, results) {
+                                    // console.log(results)
+                                userDAO.updatePassword(userId, userpwd, function(err, results) {
                                     if (err) {
                                         res.json({ code: 500, msg: '用户修改密码失败！' })
                                     } else {
@@ -343,6 +421,19 @@ var userController = {
 
             }
         })
+    },
+    //订单
+    userOrder: function(req, res) {
+        var user = { userId: req.user[0].base_info_Id, propsId: req.body.propsId, number: req.body.number, haveTime: req.body.haveTime }
+        console.log(user)
+        shopDAO.getShopProps(user, function(err, results1) {
+            if (err) {
+                res.json({ code: 500, msg: '查询个人订单失败！' + err })
+            } else {
+                res.json({ code: 500, data: results1, msg: '查询个人订单成功！' })
+            }
+        })
     }
+
 }
 module.exports = userController
