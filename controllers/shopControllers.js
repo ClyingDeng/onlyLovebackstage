@@ -4,6 +4,7 @@ var path = require('path')
 var bcrypt = require('bcrypt')
 var jwt = require('jsonwebtoken')
 var shopController = {
+    //查询商品
     product: function (req, res) {
         var userId = req.user[0].base_info_Id
         shopDAO.getmembergrade(userId, function (err, results1) {
@@ -72,6 +73,7 @@ var shopController = {
             }
         })
     },
+    //查询会员
     member: function (req, res) {
         var userId = req.user[0].base_info_Id
         shopDAO.getmembergrade(userId, function (err, results1) {
@@ -188,6 +190,7 @@ var shopController = {
             }
         })
     },
+    //充值
     charge: function (req, res) {
         var user = { userId: req.user[0].base_info_Id, integral: req.body.integral }
         shopDAO.getShopCharge(user, function (err, results) {
@@ -204,6 +207,7 @@ var shopController = {
             }
         })
     },
+    //购买道具
     props: function (req, res) {
         var userId = req.user[0].base_info_Id
         var user = { userId: req.user[0].base_info_Id, propsId: req.body.propsId, number: req.body.number, haveTime: req.body.haveTime }
@@ -323,6 +327,7 @@ var shopController = {
         })
 
     },
+    //背包
     backpack: function (req, res) {
         var userId = req.user[0].base_info_Id
         shopDAO.getbackpack(userId, function (err, results) {
@@ -337,6 +342,7 @@ var shopController = {
             }
         })
     },
+    //买会员
     buymember: function (req, res) {
         var user = { userId: req.user[0].base_info_Id, day: req.body.day }
         shopDAO.getintegral(user, function (err, results) {
