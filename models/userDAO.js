@@ -174,6 +174,16 @@ var userDAO = {
             }
         })
     },
+    idCardFront: function(req, res) {
+        DAO('insert into identification(ID_card_Id,ID_card_front) values(?,?)', [userId, idFontPic], function(err, results) {
+            // console.log(results)
+            if (err) {
+                callback(err, null)
+            } else {
+                callback(null, results)
+            }
+        })
+    }
 
 }
 module.exports = userDAO
