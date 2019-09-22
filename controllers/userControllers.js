@@ -5,6 +5,9 @@ var path = require('path')
 var bcrypt = require('bcrypt')
 var jwt = require('jsonwebtoken')
 var personalDAO = require('../models/personalDAO')
+const fs = require("fs");
+var request = require('request');
+var querystring = require('querystring');
 var userController = {
     changeName: function(req, res) {
 
@@ -432,6 +435,53 @@ var userController = {
             } else {
                 res.json({ code: 500, data: results1, msg: '查询个人订单成功！' })
             }
+        })
+    },
+    //上传身份证正面
+    idCardFront: function(req, res) {
+        var form = new formidable.IncomingForm() //创建上传表单对象
+        form.uploadDir = path.join(__dirname, '..', '/public/idCard') //设置上传文件的路径
+        form.keepExtensions = true //设置保留上传文件的扩展名
+        form.parse(req, function(err, fields, files) {
+            if (err) {
+                res.send('头像上传错误！')
+            }
+            console.log('...................')
+                //fields是上传的表单字段数组，files是上传的文件列表
+                // console.log(files)
+                //保存图片路径到数据库
+                //1.获取当前用户编号
+            var userId = req.user[0].base_info_Id
+                //2.获取当前用户的图片名称
+            var headPic = path.parse(files.file.path).base
+                // console.log('jpg格式：' + headPic)
+                // console.log(files.file.path)
+            res.json({ code: 200, msg: '身份证上传成功！等待审核！' })
+                //读取服务器文件，以base64显示
+                // var filePath = files.file.path
+                // let bitmap = fs.readFileSync(filePath);
+                // let base64str = Buffer.from(bitmap, 'binary').toString('base64');
+                // console.log(base64str)
+                //调用聚合接口
+            var queryData = querystring.stringify({
+                "key": "93e461b1c82c0972bb04fc2fca771338",
+                "image": headPic,
+                "side": "front",
+            });
+
+            var queryUrl = 'http://apis.juhe.cn/idimage/verify';
+
+            request(queryUrl, function(error, response, body) {
+                if (!error && response.statusCode == 200) {
+                    console.log(body) // 打印接口返回内容
+
+                    var jsonObj = JSON.parse(body); // 解析接口返回的JSON内容
+                    console.log(jsonObj)
+                } else {
+                    console.log('请求异常');
+                }
+            })
+
         })
     }
 
