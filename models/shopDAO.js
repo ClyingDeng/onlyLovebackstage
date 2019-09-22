@@ -79,6 +79,7 @@ var shopDAO = {
             }
         })
     },
+    //获取订单
     getShopProps: function(user, callback) {
         DAO('select owners,prop_Id,prop_Name,prop_pic,number,prop_fun_intimacy,have_Time from have_props,props where have_props.props_Id = props.prop_Id and owners = ? ', [user.userId], function(err, results) {
             console.log(results)
