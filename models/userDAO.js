@@ -174,14 +174,57 @@ var userDAO = {
             }
         })
     },
-    idCardFront: function(userId, idFontPic, callback) {
-        DAO('insert into identification(ID_card_Id,ID_card_front) values(?,?)', [userId, idFontPic], function(err, results) {
-            // console.log(results)
-            if (err) {
-                callback(err, null)
-            } else {
-                callback(null, results)
-            }
+    //修改认证状态
+    userStatus: function(userId) {
+        return new Promise((resolve, reject) => {
+            DAO('update base_info set use_status = 1 where base_info_Id = ?', [userId], function(err, results) {
+                // console.log(results)
+                if (err) {
+                    reject(err)
+                } else {
+                    resolve(results)
+                }
+            })
+        })
+    },
+    //获取本用户基本信息的性别
+    // userSex: function(userId) {
+    //     return new Promise((resolve, reject) => {
+    //         DAO('select sex from base_info where base_info_Id = ?', [userId], function(err, results) {
+    //             // console.log(results)
+    //             if (err) {
+    //                 reject(err)
+    //             } else {
+    //                 resolve(results)
+    //             }
+    //         })
+    //     })
+    // },
+    //修改用户性别
+    // updateSex: function(userId, id) {
+    //     return new Promise((resolve, reject) => {
+    //         DAO('update base_info set sex = "?" where base_info_Id = ?', [id.sex, userId], function(err, results) {
+    //             // console.log(results)
+    //             if (err) {
+    //                 reject(err)
+    //             } else {
+    //                 resolve(results)
+    //             }
+    //         })
+    //     })
+    // },
+    //往identification插入数据
+    idCardFront: function(userId, headPic, id) {
+        return new Promise((resolve, reject) => {
+
+            DAO('insert into identification(ID_card_Id,ID_card_front,ID_card_No,ID_card_name,ID_card_sex,ID_card_birthday) values(?,?,?,?,?,?)', [userId, headPic, id.idcarNo, id.name, id.sex, id.birth], function(err, results) {
+                // console.log(results)
+                if (err) {
+                    reject(err)
+                } else {
+                    resolve(results)
+                }
+            })
         })
     }
 
