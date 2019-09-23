@@ -6,10 +6,14 @@
         "start": "node ./bin/www"
     },
     "dependencies": {
-        "baidu-aip-sdk": "^2.4.4",
+        "body-parser": "^1.15.2",
+        "alipay-ftof": "^0.1.5",
         "bcrypt": "^3.0.6",
+        "compression": "^1.7.4",
         "cookie-parser": "~1.4.4",
+        "crypto": "^1.0.1",
         "debug": "~2.6.9",
+        "ejs": "^2.7.1",
         "express": "~4.16.1",
         "express-session": "^1.16.2",
         "express-ws": "^4.0.0",
@@ -17,12 +21,30 @@
         "http-errors": "~1.6.3",
         "jade": "~1.11.0",
         "jquery": "^3.4.1",
-        "mime-types": "^2.1.24",
         "morgan": "~1.9.1",
         "mysql": "^2.17.1",
         "passport": "^0.4.0",
         "passport-jwt": "^4.0.0",
+        "qr-image": "^3.2.0",
         "request": "^2.88.0",
         "step": "^1.0.0"
-    }
+    },
+    "description": "",
+    "main": "app.js",
+    "directories": {
+        "lib": "lib"
+    },
+    "devDependencies": {},
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/ClyingDeng/onlyLovebackstage.git"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/ClyingDeng/onlyLovebackstage/issues"
+    },
+    "homepage": "https://github.com/ClyingDeng/onlyLovebackstage#readme"
+
 }
