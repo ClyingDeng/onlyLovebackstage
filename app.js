@@ -13,9 +13,16 @@ var listRouter = require('./routes/list')
 var messageRouter = require('./routes/message')
 var personalRouter = require('./routes/personal')
 var shopRouter = require('./routes/shop')
-const config     = require('./config.js')
-const alipayf2f  = require('./lib/alipay_f2f')
-const fs         = require('fs')
+
+    // var payRouter =  require("./routes/pay")
+const config = require('./config.js')
+const alipayf2f = require('./lib/alipay_f2f')
+const bodyParser = require('body-parser')
+const fs = require('fs')
+    // console.log('!!!')
+    // console.log(alipayf2f)
+    // console.log(config)
+    // const SERVICE_PORT = 3001;
 var mypassport = require('./config/passport')
 
 var app = express();
@@ -50,6 +57,7 @@ app.use(session({
 
 //支付宝生成的二维码存储
 app.use((req, res, next) => {
+
 	req.config    = config;
 	req.alipayf2f = new alipayf2f(config);
 	/* 模拟数据库 仅仅作为演示 */
@@ -105,6 +113,7 @@ app.use((req, res, next) => {
 		res.json({ "status": false, "message": "服务器错误, 请稍后重试。" }).end();
 	};
 	next();
+
 });
 
 
@@ -138,6 +147,13 @@ app.use(function(err, req, res, next) {
     res.status(err.status || 500);
     res.render('error');
 });
+
+// app.listen(SERVICE_PORT, (error) => {
+// 	if (error) {
+// 		return console.error("Listening error:", error);
+// 	}
+// 	console.log("Listening port:", SERVICE_PORT);
+// });
 
 
 module.exports = app;

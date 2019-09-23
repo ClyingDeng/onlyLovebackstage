@@ -1,9 +1,40 @@
 var userDAO = require('../models/userDAO')
+var shopDAO = require('../models/shopDAO')
 var formidable = require('formidable')
 var path = require('path')
 var bcrypt = require('bcrypt')
 var jwt = require('jsonwebtoken')
 var personalDAO = require('../models/personalDAO')
+const fs = require("fs");
+var request = require('request');
+var querystring = require('querystring');
+var AipOcrClient = require("baidu-aip-sdk").ocr;
+// 设置APPID/AK/SK
+var APP_ID = "17307708";
+var API_KEY = "EqP8GisvBi2sZAUHr1Rw2MIr";
+var SECRET_KEY = "TFnSKv55DMurpDdxM0xVbfBWEo7jGQrp";
+
+// 新建一个对象，建议只保存一个对象调用服务接口
+var client = new AipOcrClient(APP_ID, API_KEY, SECRET_KEY);
+
+
+var HttpClient = require("baidu-aip-sdk").HttpClient;
+
+// 设置request库的一些参数，例如代理服务地址，超时时间等
+// request参数请参考 https://github.com/request/request#requestoptions-callback
+HttpClient.setRequestOptions({ timeout: 5000 });
+
+// 也可以设置拦截每次请求（设置拦截后，调用的setRequestOptions设置的参数将不生效）,
+// 可以按需修改request参数（无论是否修改，必须返回函数调用参数）
+// request参数请参考 https://github.com/request/request#requestoptions-callback
+HttpClient.setRequestInterceptor(function(requestOptions) {
+    // 查看参数
+    console.log(requestOptions)
+        // 修改参数
+    requestOptions.timeout = 5000;
+    // 返回参数
+    return requestOptions;
+});
 var userController = {
     changeName: function(req, res) {
 
@@ -22,7 +53,9 @@ var userController = {
                 } else {
                     bcrypt.compare(user.password, results[0].pwd, function(err, resPwd) {
                         // res == true
-                        // console.log(user.password)
+                        console.log(user.password)
+                        console.log(results[0].pwd) //加密
+                        console.log(resPwd)
                         if (resPwd) {
                             //记录登录成功后的token
                             jwt.sign({ telephone: user.telephone }, 'privateKey', { expiresIn: 60 * 60 }, function(err, token) {
@@ -41,6 +74,7 @@ var userController = {
             }
         })
     },
+
     // 注册
     register: function(req, res) {
 
@@ -54,7 +88,7 @@ var userController = {
                 userDAO.register(user, function(err, results) {
                     if (err) {
                         console.log(err)
-                        res.status(500).json({ msg: '手机号已存在，注册失败！' + err })
+                        res.json({ code: 500, msg: '手机号已存在，注册失败！' + err })
                     } else {
                         console.log(req.session.TelvCode)
                         for (var i = 0; i < req.session.TelvCode.length; i++) {
@@ -67,10 +101,81 @@ var userController = {
                                 }
                                 console.log(req.session.TelvCode)
                             } else {
-                                res.status(500).json({ code: 200, msg: '验证码输入失败，注册失败！' })
+                                res.json({ code: 200, msg: '验证码输入失败，注册失败！' })
                             }
 
                         }
+                    }
+                })
+            });
+        });
+    },
+    //忘记密码
+    forgetPassword: function(req, res) {
+        // var userId = req.user[0].base_info_Id
+        var user = { telephone: req.body.telephone, vCode: req.body.code, password: req.body.newPassword, password1: req.body.surePassword }
+
+        // console.log(userId)
+        bcrypt.genSalt(10, function(err, salt) {
+            bcrypt.hash(user.password, salt, function(err, hash) {
+                //hash是加密后的字符
+                user.password = hash
+                userDAO.exitTel(user.telephone, function(err, results) {
+                    if (err) {
+                        res.json({ code: 500, msg: '查询手机号失败！' + err })
+                    } else {
+                        console.log('数据库里面的手机号：' + results[0].telephone)
+                        console.log(req.session.TelvCode)
+                        console.log('laiba')
+
+                        console.log(req.session.TelvCode[0].vCode)
+                        console.log(user.vCode)
+                            //判断当前输入的手机号是否与注册手机号一致
+                        for (var i = 0; i < req.session.TelvCode.length; i++) {
+                            if (results[0].telephone == user.telephone) {
+                                //判断验证码
+                                if (req.session.TelvCode[i].vCode == user.vCode) {
+
+                                    //判断密码
+                                    bcrypt.compare(user.password1, user.password, (err, res1) => {
+                                            console.log('数据库密码：' + user.password)
+                                            console.log(user.password1)
+                                            console.log(res1)
+                                            if (res1) {
+                                                userDAO.updateNewPassword(user.telephone, user.password, function(err, results) {
+                                                    if (err) {
+                                                        res.json({ code: 500, msg: '数据库报错，用户设置新密码失败！' + err })
+                                                    } else {
+                                                        //检查该操作对数据表是否造成影响
+                                                        if (results.affectedRows == 0) {
+                                                            res.json({ code: 200, msg: '用户设置新密码失败！' })
+                                                        } else {
+                                                            res.json({ code: 200, affectedRows: results.affectedRows, msg: '用户设置新密码成功！' })
+
+                                                        }
+                                                    }
+                                                })
+                                            } else {
+                                                res.json({ code: 500, msg: '原密码输入错误！' })
+                                            }
+                                        })
+                                        //用完删除验证码
+                                    delete req.session.TelvCode[i];
+                                    if (req.session.TelvCode[i] == " " || req.session.TelvCode[i] == null || typeof(req.session.TelvCode[i]) == "undefined") {
+                                        req.session.TelvCode.splice(i, 1);
+                                        i = i - 1;
+                                    }
+                                    console.log(req.session.TelvCode)
+                                } else {
+                                    res.json({ code: 200, msg: '验证码输入失败，修改密码失败！' })
+                                }
+
+                            } else {
+                                res.json({ code: 200, msg: '手机号不一致，无法修改密码！' + err })
+                            }
+
+                        }
+
                     }
                 })
             });
@@ -87,11 +192,14 @@ var userController = {
                     res.json({ code: 500, msg: '查询密码失败！' })
                 } else {
                     bcrypt.compare(orguserpwd, results1[0].pwd, (err, res1) => {
+                        console.log('数据库密码：' + results1[0].pwd)
+                        console.log(res1)
                         if (res1) {
                             bcrypt.hash(userpwd, salt, function(err, hash) {
                                 userpwd = hash
                                     // console.log('哈哈哈哈' + hash)
-                                userDAO.updatePassword({ userId: userId, pwd: userpwd }, function(err, results) {
+                                    // console.log(results)
+                                userDAO.updatePassword(userId, userpwd, function(err, results) {
                                     if (err) {
                                         res.json({ code: 500, msg: '用户修改密码失败！' })
                                     } else {
@@ -343,6 +451,75 @@ var userController = {
 
             }
         })
+    },
+    //订单
+    userOrder: function(req, res) {
+        var user = { userId: req.user[0].base_info_Id, propsId: req.body.propsId, number: req.body.number, haveTime: req.body.haveTime }
+        console.log(user)
+        shopDAO.getShopProps(user, function(err, results1) {
+            if (err) {
+                res.json({ code: 500, msg: '查询个人订单失败！' + err })
+            } else {
+                res.json({ code: 500, data: results1, msg: '查询个人订单成功！' })
+            }
+        })
+    },
+    //上传身份证正面
+    idCardFront: function(req, res) {
+        var form = new formidable.IncomingForm() //创建上传表单对象
+        form.uploadDir = path.join(__dirname, '..', '/public/idCard') //设置上传文件的路径
+        form.keepExtensions = true //设置保留上传文件的扩展名
+        form.parse(req, function(err, fields, files) {
+            if (err) {
+                res.send('头像上传错误！')
+            }
+            console.log('...................')
+                //fields是上传的表单字段数组，files是上传的文件列表
+                // console.log(files)
+                //保存图片路径到数据库
+                //1.获取当前用户编号
+            var userId = req.user[0].base_info_Id
+                //2.获取当前用户的图片名称
+            var headPic = path.parse(files.file.path).base
+                // console.log('jpg格式：' + headPic)
+                // console.log(files.file.path)
+
+            //读取服务器文件，以base64显示
+            var filePath = files.file.path
+            let bitmap = fs.readFileSync(filePath);
+            let image = Buffer.from(bitmap, 'binary').toString('base64');
+            var idCardSide = "front";
+            // console.log(base64str)
+
+
+            //调用百度API接口
+            // 调用身份证识别
+            client.idcard(image, idCardSide).then(function(result) {
+                console.log(JSON.stringify(result));
+
+                res.json({ code: 200, msg: '身份证上传成功！审核通过！' })
+            }).catch(function(err) {
+                // 如果发生网络错误
+                console.log(err);
+                res.json({ code: 200, msg: '身份证上传成功！审核不通过！' })
+            });
+
+            // 如果有可选参数
+            // var options = {};
+            // options["detect_direction"] = "true";
+            // options["detect_risk"] = "false";
+
+            // // 带参数调用身份证识别
+            // client.idcard(image, idCardSide, options).then(function(result) {
+            //     console.log(JSON.stringify(result));
+            // }).catch(function(err) {
+            //     // 如果发生网络错误
+            //     console.log(err);
+            // });;
+
+
+        })
     }
+
 }
 module.exports = userController

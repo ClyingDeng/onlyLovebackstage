@@ -26,9 +26,9 @@ var userDAO = {
         })
     },
     // 修改密码
-    updatePassword: function(user, callback) {
-        console.log(user)
-        DAO('update base_info set pwd = ? WHERE base_info_id = ?', [user.pwd, user.userId], function(err, results) {
+    updatePassword: function(userId, pwd, callback) {
+        // console.log(user)
+        DAO('update base_info set pwd = ? WHERE base_info_id = ?', [pwd, userId], function(err, results) {
             if (err) {
                 callback(err, null)
             } else {
@@ -147,6 +147,35 @@ var userDAO = {
     },
     iAttention: function(userId, callback) {
         DAO('select att_Id,headPic,sex,love_description from attention join base_info on base_info_Id = att_Id and user_Id = ?', [userId], function(err, results) {
+            // console.log(results)
+            if (err) {
+                callback(err, null)
+            } else {
+                callback(null, results)
+            }
+        })
+    },
+    exitTel: function(telephone, callback) {
+        DAO('select telephone from base_info where telephone = ?', [telephone], function(err, results) {
+            // console.log(results)
+            if (err) {
+                callback(err, null)
+            } else {
+                callback(null, results)
+            }
+        })
+    },
+    updateNewPassword: function(telephone, pwd, callback) {
+        DAO('update base_info set pwd = ? WHERE telephone = ?', [pwd, telephone], function(err, results) {
+            if (err) {
+                callback(err, null)
+            } else {
+                callback(null, results)
+            }
+        })
+    },
+    idCardFront: function(userId, idFontPic, callback) {
+        DAO('insert into identification(ID_card_Id,ID_card_front) values(?,?)', [userId, idFontPic], function(err, results) {
             // console.log(results)
             if (err) {
                 callback(err, null)
