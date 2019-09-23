@@ -496,6 +496,7 @@ var userController = {
             // 调用身份证识别
             client.idcard(image, idCardSide).then(function(result) {
                 console.log(JSON.stringify(result));
+
                 res.json({ code: 200, msg: '身份证上传成功！审核通过！' })
             }).catch(function(err) {
                 // 如果发生网络错误
