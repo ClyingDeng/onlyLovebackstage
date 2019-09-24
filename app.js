@@ -4,6 +4,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var session = require('express-session');
+var cookie = require('cookie-parser');
 var passport = require('passport')
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -14,7 +15,7 @@ var messageRouter = require('./routes/message')
 var personalRouter = require('./routes/personal')
 var shopRouter = require('./routes/shop')
 
-    // var payRouter =  require("./routes/pay")
+// var payRouter =  require("./routes/pay")
 const config = require('./config.js')
 const alipayf2f = require('./lib/alipay_f2f')
 const bodyParser = require('body-parser')
@@ -24,6 +25,7 @@ const fs = require('fs')
     // console.log(config)
     // const SERVICE_PORT = 3001;
 var mypassport = require('./config/passport')
+    // var myIdentification = require('./config/Identification')
 
 var app = express();
 
@@ -58,61 +60,61 @@ app.use(session({
 //支付宝生成的二维码存储
 app.use((req, res, next) => {
 
-	req.config    = config;
-	req.alipayf2f = new alipayf2f(config);
-	/* 模拟数据库 仅仅作为演示 */
-	req.database  = {
-		get(id) {
-			return new Promise((resolve, reject) => {
-				if(!fs.existsSync(`./public/paycode/${id}.json`)) {
-					return resolve(null);
-				}
-				fs.readFile(`./public/paycode/${id}.json`, function (err, data) {
-					if (err) return (reject);
-					resolve(JSON.parse(data.toString()));
-				});
-			});
-		},
+    req.config = config;
+    req.alipayf2f = new alipayf2f(config);
+    /* 模拟数据库 仅仅作为演示 */
+    req.database = {
+        get(id) {
+            return new Promise((resolve, reject) => {
+                if (!fs.existsSync(`./public/paycode/${id}.json`)) {
+                    return resolve(null);
+                }
+                fs.readFile(`./public/paycode/${id}.json`, function(err, data) {
+                    if (err) return (reject);
+                    resolve(JSON.parse(data.toString()));
+                });
+            });
+        },
 
-		delete(id) {
-			return new Promise((resolve, reject) => {
-				if(!fs.existsSync(`./public/paycode/${id}.json`)) {
-					return resolve();
-				}
-				fs.unlink((`./public/paycode/${id}.json`, function (err) {
-					resolve(data);
-				}));
-			});
-		},
+        delete(id) {
+            return new Promise((resolve, reject) => {
+                if (!fs.existsSync(`./public/paycode/${id}.json`)) {
+                    return resolve();
+                }
+                fs.unlink((`./public/paycode/${id}.json`, function(err) {
+                    resolve(data);
+                }));
+            });
+        },
 
-		insert(id, obj) {
-			return new Promise((resolve, reject) => {
-				if(fs.existsSync(`./public/paycode/${id}.json`)) {
-					return resolve(false);
-				}
-				fs.writeFile(`./public/paycode/${id}.json`, JSON.stringify(obj), function(err){
-					if(err) return reject(err);
-					resolve(true);
-				});
-			});
-		},
+        insert(id, obj) {
+            return new Promise((resolve, reject) => {
+                if (fs.existsSync(`./public/paycode/${id}.json`)) {
+                    return resolve(false);
+                }
+                fs.writeFile(`./public/paycode/${id}.json`, JSON.stringify(obj), function(err) {
+                    if (err) return reject(err);
+                    resolve(true);
+                });
+            });
+        },
 
-		update(id, obj) {
-			return new Promise((resolve, reject) => {
-				fs.writeFile(`./public/paycode/${id}.json`, JSON.stringify(obj), function(err){
-					if(err) return reject(err);
-					resolve(true);
-				});
-			});
-		},
-	};
-	res.error     = (result) => res.json({ "status": false, message: result });
-	res.success   = (result) => res.json({ "status": true, message: result });
-	res.catch     = (error) => {
-		console.error(error);
-		res.json({ "status": false, "message": "服务器错误, 请稍后重试。" }).end();
-	};
-	next();
+        update(id, obj) {
+            return new Promise((resolve, reject) => {
+                fs.writeFile(`./public/paycode/${id}.json`, JSON.stringify(obj), function(err) {
+                    if (err) return reject(err);
+                    resolve(true);
+                });
+            });
+        },
+    };
+    res.error = (result) => res.json({ "status": false, message: result });
+    res.success = (result) => res.json({ "status": true, message: result });
+    res.catch = (error) => {
+        console.error(error);
+        res.json({ "status": false, "message": "服务器错误, 请稍后重试。" }).end();
+    };
+    next();
 
 });
 
@@ -120,8 +122,10 @@ app.use((req, res, next) => {
 app.use(express.static(path.join(__dirname, 'public')));
 //使用passport中间件，并初始化
 app.use(passport.initialize());
+// app.use(Identification.initialize())
 //使用passport的验证方法
 mypassport(passport)
+    // myIdentification(passport)
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);

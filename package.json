@@ -6,11 +6,12 @@
         "start": "node ./bin/www"
     },
     "dependencies": {
-        "body-parser": "^1.15.2",
         "alipay-ftof": "^0.1.5",
+        "baidu-aip-sdk": "^2.4.4",
         "bcrypt": "^3.0.6",
+        "body-parser": "^1.15.2",
         "compression": "^1.7.4",
-        "cookie-parser": "~1.4.4",
+        "cookie-parser": "^1.4.4",
         "crypto": "^1.0.1",
         "debug": "~2.6.9",
         "ejs": "^2.7.1",
@@ -46,5 +47,4 @@
         "url": "https://github.com/ClyingDeng/onlyLovebackstage/issues"
     },
     "homepage": "https://github.com/ClyingDeng/onlyLovebackstage#readme"
-
 }

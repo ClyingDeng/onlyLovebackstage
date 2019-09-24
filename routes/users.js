@@ -4,6 +4,7 @@ var passport = require('passport')
 var userController = require('../controllers/userControllers')
 var request = require('request');
 var querystring = require('querystring');
+
 /* GET users listing. */
 router.get('/', passport.authenticate('jwt', { session: false }), function(req, res, next) {
     res.send('respond with a resource');

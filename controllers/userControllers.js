@@ -29,7 +29,7 @@ HttpClient.setRequestOptions({ timeout: 5000 });
 // request参数请参考 https://github.com/request/request#requestoptions-callback
 HttpClient.setRequestInterceptor(function(requestOptions) {
     // 查看参数
-    console.log(requestOptions)
+    // console.log(requestOptions)
         // 修改参数
     requestOptions.timeout = 5000;
     // 返回参数
@@ -508,14 +508,8 @@ var userController = {
                     try {
                         let status = await userDAO.userStatus(userId)
                         console.log(status)
-
-                    } catch (err) {
-                        console.log(err)
-                    }
-                    try {
                         let idCardData = await userDAO.idCardFront(userId, headPic, id)
                         res.json({ code: 200, affectedRows: idCardData.affectedRows, msg: '身份证上传成功！审核通过！' })
-                        console.log(idCardData)
                     } catch (err) {
                         console.log(err)
                     }
@@ -538,34 +532,34 @@ var userController = {
 }
 module.exports = userController
 
-var json = {
-    "log_id": 7674126887213978000,
-    "words_result_num": 6,
-    "image_status": "normal",
-    "words_result": {
-        "住址": {
-            "location": { "width": 537, "top": 495, "left": 269, "height": 114 },
-            "words": "哈尔滨市道外区南极街49号3单元8楼3号"
-        },
-        "出生": {
-            "location": { "width": 415, "top": 386, "left": 274, "height": 49 },
-            "words": "19980612"
-        },
-        "姓名": {
-            "location": { "width": 157, "top": 174, "left": 282, "height": 60 },
-            "words": "宋佳镱"
-        },
-        "公民身份号码": {
-            "location": { "width": 677, "top": 757, "left": 473, "height": 49 },
-            "words": "230102199806121912"
-        },
-        "性别": {
-            "location": { "width": 38, "top": 288, "left": 279, "height": 46 },
-            "words": "男"
-        },
-        "民族": {
-            "location": { "width": 37, "top": 292, "left": 537, "height": 42 },
-            "words": "汉"
-        }
-    }
-}
+// var json = {
+//     "log_id": 7674126887213978000,
+//     "words_result_num": 6,
+//     "image_status": "normal",
+//     "words_result": {
+//         "住址": {
+//             "location": { "width": 537, "top": 495, "left": 269, "height": 114 },
+//             "words": "哈尔滨市道外区南极街49号3单元8楼3号"
+//         },
+//         "出生": {
+//             "location": { "width": 415, "top": 386, "left": 274, "height": 49 },
+//             "words": "19980612"
+//         },
+//         "姓名": {
+//             "location": { "width": 157, "top": 174, "left": 282, "height": 60 },
+//             "words": "宋佳镱"
+//         },
+//         "公民身份号码": {
+//             "location": { "width": 677, "top": 757, "left": 473, "height": 49 },
+//             "words": "230102199806121912"
+//         },
+//         "性别": {
+//             "location": { "width": 38, "top": 288, "left": 279, "height": 46 },
+//             "words": "男"
+//         },
+//         "民族": {
+//             "location": { "width": 37, "top": 292, "left": 537, "height": 42 },
+//             "words": "汉"
+//         }
+//     }
+// }
