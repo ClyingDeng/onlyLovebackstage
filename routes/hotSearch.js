@@ -13,4 +13,8 @@ router.get('/hotSearch', passport.authenticate('jwt', { session: false }), funct
 router.post('/publish', passport.authenticate('jwt', { session: false }), function (req, res, next) {
     hotSearchController.publish(req, res)
 })
+// 删除动态
+router.post('/deleteHotSearch', passport.authenticate('jwt', { session: false }), function (req, res, next) {
+    hotSearchController.deleteHotSearch(req, res)
+})
 module.exports = router;
