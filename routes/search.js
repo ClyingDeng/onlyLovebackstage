@@ -4,15 +4,15 @@ var passport = require('passport')
 var searchController = require('../controllers/searchControllers')
 
 // 普通用户
-router.get('/member', passport.authenticate('jwt', { session: false }), function(req, res, next) {
+router.get('/member', passport.authenticate('jwt', { session: false }), function(req,res,next){
+    var status = req.user[0].use_status
+    if(status == 1){
+        //已认证
+        next()
+    }else{
+        res.json({ code: 500, msg: '未实名认证,请前往认证！'  })
+    }
+},function(req, res, next) {
     searchController.getSearch(req, res)
 });
-// 一级用户
-// router.get('/seniorUser', passport.authenticate('jwt', { session: false }), function(req, res, next) {
-//     searchController.seniorUser(req, res)
-// });
-// // 二级用户
-// router.get('/masterUser', passport.authenticate('jwt', { session: false }), function(req, res, next) {
-//     searchController.masterUser(req, res)
-// });
 module.exports = router;

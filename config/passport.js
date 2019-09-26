@@ -9,7 +9,7 @@ opts.secretOrKey = 'privateKey';
 function myPassport(passport) {
     passport.use(new JwtStrategy(opts, function(jwt_payload, done) {
         // console.log(jwt_payload.telephone)
-        DAO('select base_info_Id,nickName,sex,age,telephone from base_info where base_info.telephone = ? ', [jwt_payload.telephone], function(err, results) {
+        DAO('select base_info_Id,nickName,sex,age,telephone,use_status from base_info where base_info.telephone = ? ', [jwt_payload.telephone], function(err, results) {
                 if (err) {
                     done(err, null)
                 } else {
