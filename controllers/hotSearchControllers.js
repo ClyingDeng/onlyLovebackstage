@@ -4,6 +4,7 @@ var path = require('path')
 var bcrypt = require('bcrypt')
 var jwt = require('jsonwebtoken')
 var hotSearchController = {
+    //查询动态
     hotSearch: function (req, res) {
         var userId = req.user[0].base_info_Id
         hotSearchDAO.hotSearch(userId, function (err, results) {
@@ -18,6 +19,7 @@ var hotSearchController = {
             }
         })
     },
+    //发布动态
     publish: function (req, res) {
         var form = new formidable.IncomingForm() //创建上传表单对象
         form.uploadDir = path.join(__dirname, '..', '/public/hspicture') //设置上传文件的路径
@@ -56,6 +58,7 @@ var hotSearchController = {
             })
         })
     },
+    //删除动态
     deleteHotSearch: function (req, res) {
         var userId = req.user[0].base_info_Id
         var conId = req.body.conId
