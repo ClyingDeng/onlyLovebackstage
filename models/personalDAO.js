@@ -136,9 +136,9 @@ var personalDAO = {
         })
     },
 
-    postPersonaladdFriend: function(oId,userId,callback) {
+    postPersonaladdFriend: function(oId, userId, callback) {
 
-        DAO('insert into friends(user_Id,fri_Id,fri_classified,fri_status) values (?,?,0,0)', [userId,oId], function(err, results) {
+        DAO('insert into friends(user_Id,fri_Id,fri_classified,fri_status) values (?,?,0,0)', [userId, oId], function(err, results) {
             if (err) {
                 callback(err, null)
             } else {
@@ -147,8 +147,8 @@ var personalDAO = {
         })
     },
     //同意加好友
-    agreeFriend: function(oId,userId,callback) {
-        DAO('update friends set fri_status = 1 where user_Id = ? and fri_Id = ?', [oId,userId], function(err, results) {
+    agreeFriend: function(oId, userId, callback) {
+        DAO('update friends set fri_status = 1 where user_Id = ? and fri_Id = ?', [oId, userId], function(err, results) {
             if (err) {
                 callback(err, null)
             } else {
@@ -162,11 +162,106 @@ var personalDAO = {
     postPersonalSweet: function(callback) {
 
     },
-
-    A: function() {
-
+    //点赞动态是否存在
+    isAppCon: function(conId) {
+        return new Promise((resolve, reject) => {
+            DAO('select condition_Id from approve where condition_Id = ?', [conId], function(err, results) {
+                // console.log(results)
+                if (err) {
+                    reject(err)
+                } else {
+                    resolve(results)
+                }
+            })
+        })
+    },
+    //查看之前有没有点过赞
+    appCon: function(conId, userId) {
+        return new Promise((resolve, reject) => {
+            DAO('select condition_Id,user_Id,approve_status from approve where condition_Id = ? and user_Id = ?', [conId, userId], function(err, results) {
+                // console.log(results)
+                if (err) {
+                    reject(err)
+                } else {
+                    resolve(results)
+                }
+            })
+        })
+    },
+    //第一次点赞
+    approve: function(conId, userId) {
+        return new Promise((resolve, reject) => {
+            DAO('insert into approve(condition_Id,user_Id,approve_status) values (?,?,1);', [conId, userId], function(err, results) {
+                console.log(results)
+                if (err) {
+                    reject(err)
+                } else {
+                    resolve(results)
+                }
+            })
+        })
+    },
+    //取消点赞
+    disApprove: function(conId, userId) {
+        return new Promise((resolve, reject) => {
+            DAO('update approve set approve_status = 0 where condition_Id = ? and user_Id = ?', [conId, userId], function(err, results) {
+                // console.log(results)
+                if (err) {
+                    reject(err)
+                } else {
+                    resolve(results)
+                }
+            })
+        })
+    },
+    //不是第一次点赞
+    AgainApprove: function(conId, userId) {
+        return new Promise((resolve, reject) => {
+            DAO('update approve set approve_status = 1 where condition_Id = ? and user_Id = ?', [conId, userId], function(err, results) {
+                // console.log(results)
+                if (err) {
+                    reject(err)
+                } else {
+                    resolve(results)
+                }
+            })
+        })
+    },
+    //获取点赞数
+    getApprove: function(conId) {
+        return new Promise((resolve, reject) => {
+            DAO('select condition_Id,approveNum from approves where condition_Id = ?', [conId], function(err, results) {
+                // console.log(results)
+                if (err) {
+                    reject(err)
+                } else {
+                    resolve(results)
+                }
+            })
+        })
+    },
+    seeNum: function(conId) {
+        return new Promise((resolve, reject) => {
+            DAO('select see,con_user_Id from conditions where con_Id = ?', [conId], function(err, results) {
+                if (err) {
+                    reject(err)
+                } else {
+                    resolve(results)
+                }
+            })
+        })
+    },
+    updateSee: function(conId) {
+        return new Promise((resolve, reject) => {
+            DAO('update conditions set see = see + 1 where con_Id = ?', [conId], function(err, results) {
+                if (err) {
+                    reject(err)
+                } else {
+                    resolve(results)
+                }
+            })
+        })
     }
-
 
 
 }
