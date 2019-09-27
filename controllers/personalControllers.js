@@ -285,5 +285,108 @@ var personalController = {
     //         }
     //     })
     // }
+    approve: function(req, res) {
+        var conId = req.body.conId
+        var userId = req.user[0].base_info_Id
+        console.log('对方动态编号：' + conId)
+        console.log('我自己的账号：' + userId)
+        async function appr() {
+            try {
+                //动态是否是第一次点赞
+                let isCon = await personalDAO.isAppCon(conId)
+                    // console.log('存在否')
+                    // console.log(isCon)
+                    // console.log(isCon[0].approve_status)
+                if (isCon) {
+                    let appCon = await personalDAO.appCon(conId, userId)
+                        // console.log(appCon)
+                        //存在可以点赞，同时显示当前点赞数
+                    if (appCon[0]) {
+                        if (appCon[0].approve_status == 1) {
+                            //不是第一次点赞
+                            //取消点赞
+                            try {
+                                let appStatus0 = await personalDAO.disApprove(conId, userId)
+                                    // console.log('取消点赞')
+                                    // console.log(appStatus0)
+                                try {
+                                    let getApprove = await personalDAO.getApprove(conId)
+                                        // console.log(getApprove)
+                                    if (getApprove) {
+                                        let approve = {
+                                            'approveNum': getApprove[0].approveNum
+                                        }
+                                        res.json({ code: 200, affectedRows: appStatus0.affectedRows, data: approve, msg: '取消点赞成功！' })
+                                    }
+                                } catch (err) {
+                                    res.json({ code: 200, msg: '此条动态还没获的点赞！' })
+                                }
+
+                            } catch (err) {
+                                res.json({ code: 500, data: err, msg: '取消点赞失败！' })
+                            }
+
+                        } else {
+                            //当前状态时取消状态,第二或多次点赞
+                            let appStatus1 = await personalDAO.AgainApprove(conId, userId)
+                            let getApprove = await personalDAO.getApprove(conId)
+                                // console.log(getApprove[0].approveNum)
+                            let approve = {
+                                'approveNum': getApprove[0].approveNum
+                            }
+                            res.json({ code: 200, affectedRows: appStatus1.affectedRows, data: approve, msg: '再次点赞成功！' })
+                        }
+
+                    } else {
+                        //第一次点赞
+                        let appStatus = await personalDAO.approve(conId, userId)
+                        let getApprove = await personalDAO.getApprove(conId)
+                            // console.log(getApprove[0].approveNum)
+                        let approve = {
+                            'approveNum': getApprove[0].approveNum
+                        }
+                        res.json({ code: 200, affectedRows: appStatus.affectedRows, data: approve, msg: '首次点赞成功！' })
+                    }
+
+                } else {
+                    res.json({ code: 200, msg: '此动态不存在！' })
+                }
+            } catch (err) {
+                res.json({ code: 500, data: err, msg: '点赞错误！' })
+            }
+
+        }
+        appr()
+    },
+    see: function(req, res) {
+        var conId = req.body.conId
+        var userId = req.user[0].base_info_Id
+        console.log('对方动态编号：' + conId)
+        console.log('我自己的账号：' + userId)
+        async function look() {
+            try {
+                let seeNum1 = await personalDAO.seeNum(conId)
+                    //发布人账号不能是浏览人账号
+                if (seeNum1[0].con_user_Id != userId) {
+                    let updateSee = await personalDAO.updateSee(conId)
+                        // console.log('看')
+                        // console.log(updateSee)
+                    let seeNum = await personalDAO.seeNum(conId)
+                        // console.log(seeNum)
+                    let seenums = {}
+                    seenums.seeNum = seeNum
+                    res.json({ code: 200, affectedRows: updateSee.affectedRows, data: seenums, msg: '浏览他人动态成功!' })
+                } else {
+                    let seenums = {}
+                    seenums.seeNum = seeNum1
+                    res.json({ code: 200, data: seenums, msg: '浏览自己动态成功!' })
+                }
+            } catch (err) {
+                res.json({ code: 500, data: err, msg: '浏览错误！' })
+            }
+        }
+        look()
+
+    }
 }
 module.exports = personalController

@@ -496,7 +496,7 @@ var userController = {
             // 调用身份证识别
             client.idcard(image, idCardSide).then(function(result) {
                 // results = JSON.stringify(result)
-                // console.log(result)
+                // console.log(results)
                 var id = {}
                 id.idcarNo = result.words_result.公民身份号码.words
                 id.name = result.words_result.姓名.words

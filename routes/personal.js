@@ -18,10 +18,19 @@ router.post('/addFriend/:oId', passport.authenticate('jwt', { session: false }),
 router.post('/agreeFriend/:oId', passport.authenticate('jwt', { session: false }), function(req, res, next) {
     personalController.agreeFriend(req, res)
 });
-
-
 // 送她礼物
 router.post('/addGift', passport.authenticate('jwt', { session: false }), function(req, res, next) {
     personalController.addGift(req, res)
 });
+//点赞
+router.post('/approve', passport.authenticate('jwt', { session: false }), function(req, res, next) {
+    personalController.approve(req, res)
+});
+//浏览量
+router.post('/see', passport.authenticate('jwt', { session: false }), function(req, res, next) {
+    personalController.see(req, res)
+});
+
+
+
 module.exports = router;
