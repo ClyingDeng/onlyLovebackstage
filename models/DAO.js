@@ -6,6 +6,7 @@ function commonQuery(sql, params, callback) {
     connection.connect()
     connection.query(sql, params, function(err, results, fileds) {
         if (err) {
+            console.log(err)
             callback(err, null)
         } else {
             callback(null, results)
