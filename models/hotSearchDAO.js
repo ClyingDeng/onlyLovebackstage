@@ -13,7 +13,7 @@ var hotSearchDAO = {
     //发布动态
     publish: function (conuser, callback) {
         // console.log(conuser)
-        DAO('insert into conditions (con_user_Id,con_words,con_time,con_pic_1) values (?,?,?,?)', [conuser.conuserId, conuser.conwords, conuser.conTime, conuser.headPic], function (err, results) {
+        DAO('insert into conditions (con_user_Id,con_words,con_time,con_pic_1,con_pic_2,con_pic_3,con_pic_4) values (?,?,?,?,?,?,?)', [conuser.conuserId, conuser.conwords, conuser.conTime, conuser.conpic1, conuser.conpic2, conuser.conpic3, conuser.conpic4], function (err, results) {
             if (err) {
                 callback(err, null)
             } else {
