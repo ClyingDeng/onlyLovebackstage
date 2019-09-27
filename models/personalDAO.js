@@ -156,11 +156,87 @@ var personalDAO = {
             }
         })
     },
-    postPersonalAddGift: function(callback) {
+    addGift: function(callback) {
 
     },
+    //查询我的礼物种类
+    getprops:function(userId,callback){
+        DAO('select props_Id from backpack where owners = ? ', [userId], function(err, results) {
+            // console.log(results)
+            if (err) {
+                callback(err, null)
+            } else {
+                callback(null, results)
+            }
+        })
+    },
+    //查询我的礼物
+    getbackpack:function(userId,propsId,callback){
+        DAO('select prop_Name,num from backpack where owners = ? and props_Id = ?', [userId,propsId], function(err, results) {
+            // console.log(results)
+            if (err) {
+                callback(err, null)
+            } else {
+                callback(null, results)
+            }
+        })
+    },
+    //修改礼物数量
+    insertGift:function(userId,propsId,num,haveTime,callback){
+        DAO(('INSERT into have_props (owners,props_Id,number,have_Time) VALUES (?,?,-(?),?)'),[userId,propsId,num,haveTime],function(err, results){
+            if (err) {
+                callback(err, null)
+            } else {
+                callback(null, results)
+            }
+        })
+    },
+    //查询礼物的亲密度
+    getgiftsweet:function(propsId,callback){
+        DAO('select prop_fun_intimacy from props where prop_Id = ?', [propsId], function(err, results) {
+            // console.log(results)
+            if (err) {
+                callback(err, null)
+            } else {
+                callback(null, results)
+            }
+        })
+    },
+    //插入亲密度表
+    insertsweet:function(userId,addId,propsweet,callback){
+        DAO('INSERT into sweet (user_Id,obj_Id,sweet_score) VALUES (?,?,?)', [userId,addId,propsweet], function(err, results) {
+            // console.log(results)
+            if (err) {
+                callback(err, null)
+            } else {
+                callback(null, results)
+            }
+        })
+    },
+    //查询表中是否有两人
+    selectsweet:function(userId,callback){
+        DAO('select obj_Id from sweet where user_Id = ?', [userId], function(err, results) {
+            // console.log(results)
+            if (err) {
+                callback(err, null)
+            } else {
+                callback(null, results)
+            }
+        })
+    },
+    //修改亲密度表
+    updatesweet:function(userId,addId,propsweet,callback){
+        DAO('UPDATE sweet set sweet_score = sweet_score + ? where user_Id = ? and obj_Id = ?', [propsweet,userId,addId], function(err, results) {
+            // console.log(results)
+            if (err) {
+                callback(err, null)
+            } else {
+                callback(null, results)
+            }
+        })
+    },
     postPersonalSweet: function(callback) {
-
+      
     },
     //点赞动态是否存在
     isAppCon: function(conId) {
