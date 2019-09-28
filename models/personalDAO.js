@@ -135,15 +135,39 @@ var personalDAO = {
             }
         })
     },
-
-    postPersonaladdFriend: function(oId, userId, callback) {
-
-        DAO('insert into friends(user_Id,fri_Id,fri_classified,fri_status) values (?,?,0,0)', [userId, oId], function(err, results) {
-            if (err) {
-                callback(err, null)
-            } else {
-                callback(null, results)
-            }
+    //加好友
+    postPersonaladdFriend: function(userId, oId) {
+        return new Promise((resolve, reject) => {
+            DAO('insert into friends(user_Id,fri_Id,fri_classified,fri_status) values (?,?,0,0)', [userId, oId], function(err, results) {
+                if (err) {
+                    reject(err)
+                } else {
+                    resolve(results)
+                }
+            })
+        })
+    },
+    //同意成为恋人
+    postaddLovers1: function(userId, oId) {
+        return new Promise((resolve, reject) => {
+            DAO('update sweet set sweetState = 1 where user_Id = ? and obj_Id =?', [userId, oId], function(err, results) {
+                if (err) {
+                    reject(err)
+                } else {
+                    resolve(results)
+                }
+            })
+        })
+    },
+    postaddLovers2: function(userId, oId) {
+        return new Promise((resolve, reject) => {
+            DAO('update sweet set sweetState = 1 where user_Id = ? and obj_Id =?', [oId, userId], function(err, results) {
+                if (err) {
+                    reject(err)
+                } else {
+                    resolve(results)
+                }
+            })
         })
     },
     //同意加好友
@@ -160,7 +184,7 @@ var personalDAO = {
 
     },
     //查询我的礼物种类
-    getprops:function(userId,callback){
+    getprops: function(userId, callback) {
         DAO('select props_Id from backpack where owners = ? ', [userId], function(err, results) {
             // console.log(results)
             if (err) {
@@ -171,8 +195,8 @@ var personalDAO = {
         })
     },
     //查询我的礼物
-    getbackpack:function(userId,propsId,callback){
-        DAO('select prop_Name,num from backpack where owners = ? and props_Id = ?', [userId,propsId], function(err, results) {
+    getbackpack: function(userId, propsId, callback) {
+        DAO('select prop_Name,num from backpack where owners = ? and props_Id = ?', [userId, propsId], function(err, results) {
             // console.log(results)
             if (err) {
                 callback(err, null)
@@ -182,8 +206,8 @@ var personalDAO = {
         })
     },
     //修改礼物数量
-    insertGift:function(userId,propsId,num,haveTime,callback){
-        DAO(('INSERT into have_props (owners,props_Id,number,have_Time) VALUES (?,?,-(?),?)'),[userId,propsId,num,haveTime],function(err, results){
+    insertGift: function(userId, propsId, num, haveTime, callback) {
+        DAO(('INSERT into have_props (owners,props_Id,number,have_Time) VALUES (?,?,-(?),?)'), [userId, propsId, num, haveTime], function(err, results) {
             if (err) {
                 callback(err, null)
             } else {
@@ -192,7 +216,7 @@ var personalDAO = {
         })
     },
     //查询礼物的亲密度
-    getgiftsweet:function(propsId,callback){
+    getgiftsweet: function(propsId, callback) {
         DAO('select prop_fun_intimacy from props where prop_Id = ?', [propsId], function(err, results) {
             // console.log(results)
             if (err) {
@@ -203,8 +227,8 @@ var personalDAO = {
         })
     },
     //插入亲密度表
-    insertsweet:function(userId,addId,propsweet,callback){
-        DAO('INSERT into sweet (user_Id,obj_Id,sweet_score) VALUES (?,?,?)', [userId,addId,propsweet], function(err, results) {
+    insertsweet: function(userId, addId, propsweet, callback) {
+        DAO('INSERT into sweet (user_Id,obj_Id,sweet_score) VALUES (?,?,?)', [userId, addId, propsweet], function(err, results) {
             // console.log(results)
             if (err) {
                 callback(err, null)
@@ -214,7 +238,7 @@ var personalDAO = {
         })
     },
     //查询表中是否有两人
-    selectsweet:function(userId,callback){
+    selectsweet: function(userId, callback) {
         DAO('select obj_Id from sweet where user_Id = ?', [userId], function(err, results) {
             // console.log(results)
             if (err) {
@@ -225,8 +249,8 @@ var personalDAO = {
         })
     },
     //修改亲密度表
-    updatesweet:function(userId,addId,propsweet,callback){
-        DAO('UPDATE sweet set sweet_score = sweet_score + ? where user_Id = ? and obj_Id = ?', [propsweet,userId,addId], function(err, results) {
+    updatesweet: function(userId, addId, propsweet, callback) {
+        DAO('UPDATE sweet set sweet_score = sweet_score + ? where user_Id = ? and obj_Id = ?', [propsweet, userId, addId], function(err, results) {
             // console.log(results)
             if (err) {
                 callback(err, null)
@@ -236,7 +260,7 @@ var personalDAO = {
         })
     },
     postPersonalSweet: function(callback) {
-      
+
     },
     //点赞动态是否存在
     isAppCon: function(conId) {
@@ -316,6 +340,7 @@ var personalDAO = {
             })
         })
     },
+    //浏览数量
     seeNum: function(conId) {
         return new Promise((resolve, reject) => {
             DAO('select see,con_user_Id from conditions where con_Id = ?', [conId], function(err, results) {
@@ -327,6 +352,7 @@ var personalDAO = {
             })
         })
     },
+    //浏览数量+1
     updateSee: function(conId) {
         return new Promise((resolve, reject) => {
             DAO('update conditions set see = see + 1 where con_Id = ?', [conId], function(err, results) {
@@ -337,7 +363,92 @@ var personalDAO = {
                 }
             })
         })
-    }
+    },
+    //查询亲密度
+    seeSweet: function(userId, oId) {
+        return new Promise((resolve, reject) => {
+            DAO('select sweet_score from sweet where user_Id = ? and obj_Id = ?', [userId, oId], function(err, results) {
+                if (err) {
+                    reject(err)
+                } else {
+                    resolve(results)
+                }
+            })
+        })
+    },
+    //对方有没有恋人
+    isLover: function(oId) {
+        return new Promise((resolve, reject) => {
+            DAO('select sweetState from sweet where obj_Id = ?  and sweetState =1', [oId, oId], function(err, results) {
+                if (err) {
+                    reject(err)
+                } else {
+                    resolve(results)
+                }
+            })
+        })
+    },
+    //之前是否已关注
+    isAttention: function(userId, oId) {
+        return new Promise((resolve, reject) => {
+            DAO('select Id from attention where user_Id = ? and att_Id = ?', [userId, oId], function(err, results) {
+                if (err) {
+                    reject(err)
+                } else {
+                    resolve(results)
+                }
+            })
+        })
+    },
+    //点击关注
+    pickAttention: function(userId, oId) {
+        return new Promise((resolve, reject) => {
+            DAO('insert into attention(user_Id,att_Id) values(?,?)', [userId, oId], function(err, results) {
+                if (err) {
+                    reject(err)
+                } else {
+                    resolve(results)
+                }
+            })
+        })
+    },
+    //已关注一次，查看关注状态
+    attentionStatus: function(userId, oId) {
+        return new Promise((resolve, reject) => {
+            DAO('select att_status from attention where user_Id = ? and att_Id = ?', [userId, oId], function(err, results) {
+                if (err) {
+                    reject(err)
+                } else {
+                    resolve(results)
+                }
+            })
+        })
+    },
+    //已关注一次，取消关注
+    canelAttention: function(userId, oId) {
+        return new Promise((resolve, reject) => {
+            DAO('update attention set att_status = 0 where user_Id = ? and att_Id = ?', [userId, oId], function(err, results) {
+                if (err) {
+                    reject(err)
+                } else {
+                    resolve(results)
+                }
+            })
+        })
+    },
+    //已关注一次，再次关注
+    attentionAgain: function(userId, oId) {
+        return new Promise((resolve, reject) => {
+            DAO('update attention set att_status = 1 where user_Id = ? and att_Id = ?', [userId, oId], function(err, results) {
+                if (err) {
+                    reject(err)
+                } else {
+                    resolve(results)
+                }
+            })
+        })
+    },
+
 
 
 }

@@ -67,5 +67,6 @@ var messageDAO = {
             }
         })
     }
+
 }
 module.exports = messageDAO

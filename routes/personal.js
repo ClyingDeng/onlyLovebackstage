@@ -15,8 +15,9 @@ router.get('/othersAttention/:uId', passport.authenticate('jwt', { session: fals
 router.post('/addFriend/:oId', passport.authenticate('jwt', { session: false }), function(req, res, next) {
     personalController.addFriend(req, res)
 });
-router.post('/agreeFriend/:oId', passport.authenticate('jwt', { session: false }), function(req, res, next) {
-    personalController.agreeFriend(req, res)
+//发送恋人请求
+router.post('/addLovers/:oId', passport.authenticate('jwt', { session: false }), function(req, res, next) {
+    personalController.addLovers(req, res)
 });
 // 送她礼物
 router.post('/addGift', passport.authenticate('jwt', { session: false }), function(req, res, next) {
@@ -29,6 +30,10 @@ router.post('/approve', passport.authenticate('jwt', { session: false }), functi
 //浏览量
 router.post('/see', passport.authenticate('jwt', { session: false }), function(req, res, next) {
     personalController.see(req, res)
+});
+//点击关注
+router.post('/pickAttention/:oId', passport.authenticate('jwt', { session: false }), function(req, res, next) {
+    personalController.pickAttention(req, res)
 });
 
 
