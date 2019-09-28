@@ -74,7 +74,7 @@ var listController = {
                             if(results1==0 || results1 == null){
                                 res.json({ code: 200, msg: '比翼榜内暂时没有您的信息' })
                             }else{
-                                res.json({ code: 200, data: manyInfo, msg: '比翼榜查询成功！',您的排名: results1})
+                                res.json({ code: 200, data: manyInfo, msg: '比翼榜查询成功！',你们的排名: results1})
                             }
                         }
                     })

@@ -46,7 +46,7 @@ var listDAO = {
         })
     },
     mysweetChart: function(userId,callback){
-        DAO('SELECT rowno,用户ID FROM(SELECT (@rowNO := @rowNo+1) AS rowno,a.* FROM (SELECT * FROM sweetRank) a ,(SELECT @rowNO :=0) b ) asd WHERE asd.用户ID= ? ',[userId],function(err,results){
+        DAO('SELECT rowno FROM(SELECT (@rowNO := @rowNo+1) AS rowno,a.* FROM (SELECT * FROM sweetRank) a ,(SELECT @rowNO :=0) b ) asd WHERE (asd.情侣1= ? || asd.情侣2= ?)',[userId,userId],function(err,results){
             if (err) {
                 callback(err, null)
             } else {
