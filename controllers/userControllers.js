@@ -30,7 +30,7 @@ HttpClient.setRequestOptions({ timeout: 5000 });
 HttpClient.setRequestInterceptor(function(requestOptions) {
     // 查看参数
     // console.log(requestOptions)
-        // 修改参数
+    // 修改参数
     requestOptions.timeout = 5000;
     // 返回参数
     return requestOptions;
@@ -292,13 +292,13 @@ var userController = {
             // var gift = req.body.gift
         userDAO.from_Presents(userId, function(err, results) {
             if (err) {
-                res.json({ code: 500, msg: '用户送出礼物失败！' + err })
+                res.json({ code: 500, msg: '搜索用户送出礼物失败！' + err })
             } else {
                 //检查该操作对数据表是否造成影响
                 // if (results.affectedRows == 0) {
                 //     res.json({ code: 500, msg: '用户送出礼物失败！' })
                 // } else {
-                res.json({ code: 200, data: results, msg: '用户送出礼物成功！' })
+                res.json({ code: 200, data: results, msg: '搜索用户送出礼物成功！' })
                     // }
             }
         });
@@ -312,13 +312,13 @@ var userController = {
         // var gift = req.body.gift
         userDAO.from_Present(userId, function(err, results) {
             if (err) {
-                res.json({ code: 500, msg: '用户送出礼物失败！' + err })
+                res.json({ code: 500, msg: '查看用户送出礼物失败！' + err })
             } else {
                 //检查该操作对数据表是否造成影响
                 // if (results.affectedRows == 0) {
                 //     res.json({ code: 500, msg: '用户送出礼物失败！' })
                 // } else {
-                res.json({ code: 200, data: results, msg: '用户送出礼物成功！' })
+                res.json({ code: 200, data: results, msg: '查看用户送出礼物成功！' })
                     // }
             }
         });
@@ -335,13 +335,13 @@ var userController = {
         userDAO.to_Presents(fromId, toId, function(err, results) {
             if (err) {
                 console.log(err)
-                res.json({ code: 500, msg: '用户收到礼物失败！' + err })
+                res.json({ code: 500, msg: '搜索用户收到礼物失败！' + err })
             } else {
                 //检查该操作对数据表是否造成影响
                 // if (results.affectedRows == 0) {
                 //     res.json({ code: 500, msg: '用户收到礼物失败！' })
                 // } else {
-                res.json({ code: 200, data: results, msg: '用户收到礼物成功！' })
+                res.json({ code: 200, data: results, msg: '搜索用户收到礼物成功！' })
                     // }
             }
         });
@@ -358,14 +358,14 @@ var userController = {
         userDAO.to_Present(userId, function(err, results) {
             if (err) {
                 console.log(err)
-                res.json({ code: 500, msg: '用户收到礼物失败！' + err })
+                res.json({ code: 500, msg: '查看户收到礼物失败！' + err })
             } else {
                 //检查该操作对数据表是否造成影响
                 // if (results.affectedRows == 0) {
                 //     res.json({ code: 500, msg: '用户收到礼物失败！' })
                 // } else {
 
-                res.json({ code: 200, data: results, msg: '用户收到礼物成功！' })
+                res.json({ code: 200, data: results, msg: '查看用户收到礼物成功！' })
                     // }
             }
         });
@@ -438,20 +438,6 @@ var userController = {
             }
         })
     },
-    //我关注的人的详情
-    iAttentionPerson: function(req, res) {
-        var userId = req.user[0].base_info_Id
-        console.log(userId)
-        userDAO.to_Present(userId, function(err, results) {
-            if (err) {
-                console.log(err)
-                res.json({ code: 500, msg: '用户收到礼物失败！' + err })
-            } else {
-                res.json({ code: 200, data: results, msg: '用户收到礼物成功！' })
-
-            }
-        })
-    },
     //订单
     userOrder: function(req, res) {
         var user = { userId: req.user[0].base_info_Id, propsId: req.body.propsId, number: req.body.number, haveTime: req.body.haveTime }
@@ -483,15 +469,12 @@ var userController = {
             var headPic = path.parse(files.file.path).base
                 // console.log('jpg格式：' + headPic)
                 // console.log(files.file.path)
-
-            //读取服务器文件，以base64显示
+                //读取服务器文件，以base64显示
             var filePath = files.file.path
             let bitmap = fs.readFileSync(filePath);
             let image = Buffer.from(bitmap, 'binary').toString('base64');
             var idCardSide = "front";
             // console.log(base64str)
-
-
             //调用百度API接口
             // 调用身份证识别
             client.idcard(image, idCardSide).then(function(result) {
@@ -504,7 +487,6 @@ var userController = {
                 id.birth = result.words_result.出生.words
                 console.log(id)
                 async function identifcat() {
-
                     try {
                         let status = await userDAO.userStatus(userId)
                         console.log(status)
@@ -513,18 +495,13 @@ var userController = {
                     } catch (err) {
                         console.log(err)
                     }
-
                 }
                 identifcat()
-
-
             }).catch(function(err) {
                 // 如果发生网络错误
                 console.log(err);
                 res.json({ code: 200, msg: '身份证上传成功！审核不通过！' })
             });
-
-
 
         })
     }
