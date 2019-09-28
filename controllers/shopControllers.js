@@ -344,71 +344,144 @@ var shopController = {
     },
     //买会员
     buymember: function (req, res) {
+        var userId = req.user[0].base_info_Id
         var user = { userId: req.user[0].base_info_Id, day: req.body.day }
         shopDAO.getintegral(user, function (err, results) {
             if (err) {
                 res.json({ code: 500, msg: '查询余额失败！' })
             } else {
                 var integral = results[0].integral
-                if (user.day == 30) {
-                    // user.day = 30
-                    if (integral <= 10) {
-                        res.json({ code: 500, msg: '您的余额不足！' })
+                shopDAO.selectmember(function (err, results3) {
+                    if (err) {
+                        res.json({ code: 500, msg: '查询全部会员ID失败！' })
                     } else {
-                        shopDAO.buymember(user, function (err, results1) {
-                            if (err) {
-                                res.json({ code: 500, msg: '购买失败请重试！' + err })
-                            } else {
-                                integral = integral - 10
-                                shopDAO.updateintegral(user, integral, function (err, results2) {
-                                    if (err) {
-                                        res.json({ code: 500, msg: '修改余额失败！' })
-                                    } else {
-                                        res.json({ code: 200, 您的积分还有: integral, msg: '购买包月会员成功！' })
-                                    }
-                                })
+                        var str = JSON.stringify(results3);
+                        console.log(str)
+                        var flag = str.indexOf(userId)
+                        if(flag != -1){
+                            if (user.day == 30) {
+                                // user.day = 30
+                                if (integral <= 10) {
+                                    res.json({ code: 500, msg: '您的余额不足！' })
+                                } else {
+                                    shopDAO.buymember(user, function (err, results1) {
+                                        if (err) {
+                                            res.json({ code: 500, msg: '购买失败请重试！' + err })
+                                        } else {
+                                            integral = integral - 10
+                                            shopDAO.updateintegral(user, integral, function (err, results2) {
+                                                if (err) {
+                                                    res.json({ code: 500, msg: '修改余额失败！' })
+                                                } else {
+                                                    res.json({ code: 200, 您的积分还有: integral, msg: '购买包月会员成功！' })
+                                                }
+                                            })
+                                        }
+                                    })
+                                }
+                            } else if (user.day == 120) {
+                                if (integral <= 30) {
+                                    res.json({ code: 500, msg: '您的余额不足！' })
+                                } else {
+                                    shopDAO.buymember(user, function (err, results1) {
+                                        if (err) {
+                                            res.json({ code: 500, msg: '购买失败请重试！' })
+                                        } else {
+                                            integral = integral - 30
+                                            shopDAO.updateintegral(user, integral, function (err, results2) {
+                                                if (err) {
+                                                    res.json({ code: 500, msg: '修改余额失败！' })
+                                                } else {
+                                                    res.json({ code: 200, 您的积分还有: integral, msg: '购买包季会员成功！' })
+                                                }
+                                            })
+                                        }
+                                    })
+                                }
+                            } else if (user.day == 365) {
+                                if (integral <= 80) {
+                                    res.json({ code: 500, msg: '您的余额不足！' })
+                                } else {
+                                    shopDAO.buymember(user, function (err, results1) {
+                                        if (err) {
+                                            res.json({ code: 500, msg: '购买失败请重试！' })
+                                        } else {
+                                            integral = integral - 80
+                                            shopDAO.updateintegral(user, integral, function (err, results2) {
+                                                if (err) {
+                                                    res.json({ code: 500, msg: '修改余额失败！' })
+                                                } else {
+                                                    res.json({ code: 200, 您的积分还有: integral, msg: '购买包年会员成功！' })
+                                                }
+                                            })
+                                        }
+                                    })
+                                }
                             }
-                        })
-                    }
-                } else if (user.day == 120) {
-                    if (integral <= 30) {
-                        res.json({ code: 500, msg: '您的余额不足！' })
-                    } else {
-                        shopDAO.buymember(user, function (err, results1) {
-                            if (err) {
-                                res.json({ code: 500, msg: '购买失败请重试！' })
-                            } else {
-                                integral = integral - 30
-                                shopDAO.updateintegral(user, integral, function (err, results2) {
-                                    if (err) {
-                                        res.json({ code: 500, msg: '修改余额失败！' })
-                                    } else {
-                                        res.json({ code: 200, 您的积分还有: integral, msg: '购买包季会员成功！' })
-                                    }
-                                })
+                        }else{
+                            if (user.day == 30) {
+                                // user.day = 30
+                                if (integral <= 10) {
+                                    res.json({ code: 500, msg: '您的余额不足！' })
+                                } else {
+                                    shopDAO.insertmember(user, function (err, results1) {
+                                        if (err) {
+                                            res.json({ code: 500, msg: '购买失败请重试！' + err })
+                                        } else {
+                                            integral = integral - 10
+                                            shopDAO.updateintegral(user, integral, function (err, results2) {
+                                                if (err) {
+                                                    res.json({ code: 500, msg: '修改余额失败！' })
+                                                } else {
+                                                    res.json({ code: 200, 您的积分还有: integral, msg: '购买包月会员成功！' })
+                                                }
+                                            })
+                                        }
+                                    })
+                                }
+                            } else if (user.day == 120) {
+                                if (integral <= 30) {
+                                    res.json({ code: 500, msg: '您的余额不足！' })
+                                } else {
+                                    shopDAO.insertmember(user, function (err, results1) {
+                                        if (err) {
+                                            res.json({ code: 500, msg: '购买失败请重试！' })
+                                        } else {
+                                            integral = integral - 30
+                                            shopDAO.updateintegral(user, integral, function (err, results2) {
+                                                if (err) {
+                                                    res.json({ code: 500, msg: '修改余额失败！' })
+                                                } else {
+                                                    res.json({ code: 200, 您的积分还有: integral, msg: '购买包季会员成功！' })
+                                                }
+                                            })
+                                        }
+                                    })
+                                }
+                            } else if (user.day == 365) {
+                                if (integral <= 80) {
+                                    res.json({ code: 500, msg: '您的余额不足！' })
+                                } else {
+                                    shopDAO.insertmember(user, function (err, results1) {
+                                        if (err) {
+                                            res.json({ code: 500, msg: '购买失败请重试！' })
+                                        } else {
+                                            integral = integral - 80
+                                            shopDAO.updateintegral(user, integral, function (err, results2) {
+                                                if (err) {
+                                                    res.json({ code: 500, msg: '修改余额失败！' })
+                                                } else {
+                                                    res.json({ code: 200, 您的积分还有: integral, msg: '购买包年会员成功！' })
+                                                }
+                                            })
+                                        }
+                                    })
+                                }
                             }
-                        })
+                        }
                     }
-                } else if (user.day == 365) {
-                    if (integral <= 80) {
-                        res.json({ code: 500, msg: '您的余额不足！' })
-                    } else {
-                        shopDAO.buymember(user, function (err, results1) {
-                            if (err) {
-                                res.json({ code: 500, msg: '购买失败请重试！' })
-                            } else {
-                                integral = integral - 80
-                                shopDAO.updateintegral(user, integral, function (err, results2) {
-                                    if (err) {
-                                        res.json({ code: 500, msg: '修改余额失败！' })
-                                    } else {
-                                        res.json({ code: 200, 您的积分还有: integral, msg: '购买包年会员成功！' })
-                                    }
-                                })
-                            }
-                        })
-                    }
-                }
+                })
+                
             }
         })
     }
