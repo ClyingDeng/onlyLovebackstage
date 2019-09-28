@@ -135,10 +135,31 @@ var shopDAO = {
             }
         })
     },
+    //查询所有会员成员
+    selectmember:function(callback){
+        DAO('select member_user_Id from memberinfos ', null , function(err, results) {
+            // console.log(results)
+            if (err) {
+                callback(err, null)
+            } else {
+                callback(null, results)
+            }
+        })
+    },
     //购买会员
     buymember:function(user,callback){
         // console.log(user.day)
         DAO('update memberinfos set member_status = 1,member_grade=1,member_status=0,member_date = member_date + ?   where member_user_Id = ? ', [user.day,user.userId], function(err, results) {
+            // console.log(results)
+            if (err) {
+                callback(err, null)
+            } else {
+                callback(null, results)
+            }
+        })
+    },
+    insertmember:function(user,callback){
+        DAO('insert into memberinfos (member_grade,member_user_Id,member_date,member_status) values (1,?,?,1) ', [user.userId,user.day], function(err, results) {
             // console.log(results)
             if (err) {
                 callback(err, null)
